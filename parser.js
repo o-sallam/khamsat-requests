@@ -11,56 +11,64 @@ function parsePostsHtml(html) {
 
   for (const row of rows) {
     try {
-      // --- Post ID ---
-      const idAttr = row.getAttribute('id') || ''; // e.g. "forum_post-783918"
-      const postId = idAttr.replace('forum_post-', '').trim();
+      const idAttr = row.getAttribute('id') || ''; 
+      const idNum = Number(idAttr.replace('forum_post-', ''));
+      const idString = String(idNum);
 
-      // --- Title & URL ---
       const titleEl = row.querySelector('td.details-td h3.details-head a');
       const title = titleEl ? titleEl.text.trim() : null;
-      const relativeUrl = titleEl ? titleEl.getAttribute('href') : null;
-      const postUrl = relativeUrl ? `https://khamsat.com${relativeUrl}` : null;
+      const postUrl = titleEl ? titleEl.getAttribute('href') : null;
 
-      // --- Buyer (requester) info ---
-      const buyerLinkEl = row.querySelector('td.details-td ul.details-list li a.user');
-      const buyerName = buyerLinkEl ? buyerLinkEl.text.replace(/\s+/g, ' ').trim() : null;
-      const buyerRelUrl = buyerLinkEl ? buyerLinkEl.getAttribute('href') : null;
-      const buyerProfileUrl = buyerRelUrl ? `https://khamsat.com${buyerRelUrl}` : null;
+      // Requester (First user link)
+      const users = row.querySelectorAll('td.details-td a.user');
+      const requesterEl = users[0];
+      const requester = {
+        name: requesterEl ? requesterEl.text.trim() : null,
+        profileUrl: requesterEl ? requesterEl.getAttribute('href') : null,
+        avatar: row.querySelector('td.avatar-td img')?.getAttribute('src') || null
+      };
 
-      // Avatar is in the first <td> (avatar-td)
-      const avatarEl = row.querySelector('td.avatar-td img');
-      const buyerAvatar = avatarEl ? avatarEl.getAttribute('src') : null;
+      // Last Replier (Second user link if exists)
+      const replierEl = users[1];
+      const lastReplier = replierEl ? {
+        name: replierEl.text.trim(),
+        profileUrl: replierEl.getAttribute('href'),
+        avatar: null, // Scraper schema has it, but it's often not in the row HTML for the replier
+        replyTime: {
+          text: '', // To be filled from span
+          timestamp: '' // To be filled from span
+        }
+      } : null;
 
-      // --- Posted time ---
-      // The d-lg-inline-block li contains a <span> with the title attr = ISO time
-      const postedTimeEl = row.querySelector('td.details-td li.d-lg-inline-block span');
-      const postedTimeISO = postedTimeEl ? postedTimeEl.getAttribute('title') : null;
-      const postedTimeRelative = postedTimeEl ? postedTimeEl.text.trim() : null;
+      // Timing info
+      const timeSpans = row.querySelectorAll('td.details-td span[title]');
+      const postedSpan = timeSpans[0];
+      const activitySpan = timeSpans[1];
 
-      // --- Last activity time ---
-      // The d-lg-none li contains the last interaction span
-      const lastActEl = row.querySelector('td.details-td li.d-lg-none span');
-      const lastActISO = lastActEl ? lastActEl.getAttribute('title') : null;
-      const lastActRelative = lastActEl ? lastActEl.text.replace(/\s+/g, ' ').trim() : null;
+      const timing = {
+        posted: {
+          text: postedSpan ? postedSpan.text.trim() : '',
+          timestamp: postedSpan ? postedSpan.getAttribute('title') : ''
+        },
+        lastReplyMobile: activitySpan ? activitySpan.text.trim() : ''
+      };
+
+      if (lastReplier && activitySpan) {
+        lastReplier.replyTime.text = activitySpan.text.trim();
+        lastReplier.replyTime.timestamp = activitySpan.getAttribute('title');
+      }
 
       posts.push({
-        postId,
-        title,
-        postUrl,
-        buyer: {
-          name: buyerName,
-          profileUrl: buyerProfileUrl,
-          avatar: buyerAvatar,
-        },
-        postedAt: {
-          iso: postedTimeISO ? parseKhamsatDate(postedTimeISO) : null,
-          relative: postedTimeRelative,
-        },
-        lastActivity: {
-          iso: lastActISO ? parseKhamsatDate(lastActISO) : null,
-          relative: lastActRelative,
-        },
-        detectedAt: new Date().toISOString(),
+        id: idNum,
+        idString: idString,
+        postId: idAttr,
+        index: 0,
+        title: title,
+        postUrl: postUrl,
+        requester: requester,
+        timing: timing,
+        lastReplier: lastReplier,
+        detectedAt: new Date().toISOString()
       });
     } catch (err) {
       console.error(`[parser] Failed to parse row: ${err.message}`);

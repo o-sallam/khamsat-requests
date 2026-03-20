@@ -88,20 +88,21 @@
             const div = document.createElement('div');
             div.className = 'post-item';
             
-            const postedTime = post.postedAt?.relative || '--';
-            const avatar = post.buyer?.avatar || 'https://via.placeholder.com/40';
-            const buyerName = post.buyer?.name || 'Unknown';
+            const postedTime = post.timing?.posted?.text || post.postedAt?.relative || '--';
+            const avatar = post.requester?.avatar || post.buyer?.avatar || 'https://via.placeholder.com/40';
+            const buyerName = post.requester?.name || post.buyer?.name || 'Unknown';
             const title = post.title || 'Untitled Request';
+            const postUrl = post.postUrl && post.postUrl.startsWith('http') ? post.postUrl : `https://khamsat.com${post.postUrl}`;
 
             div.innerHTML = `
                 <div class="post-header">
                     <img src="${avatar}" class="avatar" alt="${buyerName}">
                     <span class="buyer-name">${buyerName}</span>
                 </div>
-                <a href="${post.postUrl}" target="_blank" class="post-title">${title}</a>
+                <a href="${postUrl}" target="_blank" class="post-title">${title}</a>
                 <div class="post-meta">
                     <span>${postedTime}</span>
-                    <span>ID: ${post.postId}</span>
+                    <span>ID: ${post.id || post.postId}</span>
                 </div>
             `;
             return div;

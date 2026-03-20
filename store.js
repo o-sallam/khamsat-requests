@@ -22,7 +22,11 @@ function loadKnownIds() {
 }
 
 function saveKnownIds(idSet) {
-  fs.writeFileSync(IDS_FILE, JSON.stringify([...idSet], null, 2));
+  const sorted = [...idSet]
+    .map(Number)
+    .sort((a, b) => b - a)
+    .map(String);
+  fs.writeFileSync(IDS_FILE, JSON.stringify(sorted, null, 2));
 }
 
 function loadKnownPosts() {
@@ -35,7 +39,8 @@ function loadKnownPosts() {
 }
 
 function saveKnownPosts(posts) {
-  fs.writeFileSync(POSTS_FILE, JSON.stringify(posts, null, 2));
+  const sorted = [...posts].sort((a, b) => b.id - a.id);
+  fs.writeFileSync(POSTS_FILE, JSON.stringify(sorted, null, 2));
 }
 
 module.exports = { init, loadKnownIds, saveKnownIds, loadKnownPosts, saveKnownPosts };

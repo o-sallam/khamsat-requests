@@ -147,8 +147,9 @@ app.get('/posts/recent', (req, res) => {
 app.post('/poll/now', async (req, res) => {
   res.json({ ok: true, message: 'Poll triggered. Check /posts/new in a moment.' });
   // Fire async — don't await so response is instant
-  // poller.poll is not exported directly; the poller handles its own timer.
-  // We expose a manual trigger via the module:
+  if (typeof poller.poll === 'function') {
+    poller.poll().catch(console.error);
+  }
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
