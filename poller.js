@@ -138,8 +138,8 @@ function getAllPosts() {
 }
 
 /**
- * Bulk-seed known IDs (from manual scraping phase).
- * Returns how many new IDs were added.
+ * Bulk-seed only IDs (no post data).
+ * Used when you just have a list of IDs and want to mark them as known.
  */
 function seedIds(ids) {
   let added = 0;
@@ -154,4 +154,111 @@ function seedIds(ids) {
   return added;
 }
 
-module.exports = { start, stop, drainNewPosts, getStatus, getAllPosts, seedIds };
+/**
+ * Bulk-seed full post objects from your scraped JSON file.
+ * Normalizes your scraper's schema → our internal schema.
+ * Returns { added, skipped } counts.
+ */
+function seedFullPosts(scrapedPosts) {
+  let added = 0;
+  let skipped = 0;
+
+  for (const raw of scrapedPosts) {
+    const postId = String(raw.id || raw.postId || '').replace('forum_post-', '');
+    if (!postId) { skipped++; continue; }
+
+    if (knownIds.has(postId)) { skipped++; continue; }
+
+    // Normalize scraper schema → internal schema
+    const normalized = normalizeScrapePost(raw, postId);
+    knownIds.add(postId);
+    allPosts.push(normalized);
+    added++;
+  }
+
+  store.saveKnownIds(knownIds);
+  store.saveKnownPosts(allPosts);
+  return { added, skipped };
+}
+
+/**
+ * Convert your scraper's post shape to our internal shape.
+ * Handles both the scraper format and our own parser format gracefully.
+ */
+function normalizeScrapePost(raw, postId) {
+  // --- Posted time ---
+  const postedRaw = raw.timing?.posted?.timestamp || raw.postedAt?.iso || null;
+  const postedRelative = raw.timing?.posted?.text || raw.postedAt?.relative || null;
+
+  // --- Last activity ---
+  const lastActRaw = raw.lastReplier?.replyTime?.timestamp || raw.lastActivity?.iso || null;
+  const lastActRelative = raw.lastReplier?.replyTime?.text
+    || raw.timing?.lastReplyMobile
+    || raw.lastActivity?.relative
+    || null;
+
+  // --- Buyer / requester ---
+  const buyer = raw.requester || raw.buyer || {};
+
+  return {
+    postId,
+    title: raw.title || null,
+    postUrl: raw.postUrl
+      ? (raw.postUrl.startsWith('http') ? raw.postUrl : `https://khamsat.com${raw.postUrl}`)
+      : null,
+    buyer: {
+      name: buyer.name || null,
+      profileUrl: buyer.profileUrl
+        ? (buyer.profileUrl.startsWith('http') ? buyer.profileUrl : `https://khamsat.com${buyer.profileUrl}`)
+        : null,
+      avatar: buyer.avatar || null,
+    },
+    postedAt: {
+      iso: postedRaw ? parseKhamsatDate(postedRaw) : null,
+      relative: postedRelative,
+    },
+    lastActivity: {
+      iso: lastActRaw ? parseKhamsatDate(lastActRaw) : null,
+      relative: lastActRelative,
+    },
+    detectedAt: raw.detectedAt || new Date().toISOString(),
+    seededFromScrape: true,
+  };
+}
+
+/**
+ * Parse "DD/MM/YYYY HH:MM:SS GMT" or already-ISO strings.
+ */
+function parseKhamsatDate(raw) {
+  if (!raw) return null;
+  // Already ISO
+  if (raw.includes('T')) return raw;
+  try {
+    const [datePart, timePart] = raw.trim().split(' ');
+    const [day, month, year] = datePart.split('/');
+    return new Date(`${year}-${month}-${day}T${timePart}Z`).toISOString();
+  } catch {
+    return raw;
+  }
+}
+
+/**
+ * Returns posts sorted by publish time (newest first).
+ * This is the alternative to Khamsat's default "last activity" ordering.
+ */
+function getRecentPosts(limit = 20) {
+  return [...allPosts]
+    .filter(p => p.postedAt?.iso)
+    .sort((a, b) => new Date(b.postedAt.iso) - new Date(a.postedAt.iso))
+    .slice(0, limit);
+}
+
+module.exports = {
+  start, stop,
+  drainNewPosts,
+  getStatus,
+  getAllPosts,
+  getRecentPosts,
+  seedIds,
+  seedFullPosts,
+};
