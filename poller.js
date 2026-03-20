@@ -116,7 +116,7 @@ function stop() {
  * Returns and clears the new posts buffer (consumed by GET /posts/new).
  */
 function drainNewPosts() {
-  const result = [...newPostsBuffer];
+  const result = [...newPostsBuffer].sort((a, b) => Number(a.postId) - Number(b.postId));
   newPostsBuffer = [];
   return result;
 }
@@ -134,7 +134,7 @@ function getStatus() {
 }
 
 function getAllPosts() {
-  return allPosts;
+  return [...allPosts].sort((a, b) => Number(a.postId) - Number(b.postId));
 }
 
 /**

@@ -7,13 +7,15 @@ Real-time monitor for Khamsat.com community requests. Polls every 2 minutes and 
 ## Setup
 
 ```bash
-npm install
-npm start
+pnpm install
+pnpm start
 # or for dev with auto-reload:
-npm run dev
+pnpm run dev
 ```
 
 Server starts on `http://localhost:3000`
+
+📊 **Web Dashboard**: Access the live monitor dashboard at `http://localhost:3000/` to visualize current status and new requests in real-time.
 
 ---
 
@@ -94,6 +96,7 @@ Poller health check — known IDs count, last poll time, buffer size.
 
 ### `GET /posts/new`
 Returns posts detected **since the last time you called this endpoint**, then clears the buffer.
+Posts are returned sorted by `postId` ascending (oldest first).
 Call this repeatedly (e.g. every 30s from your client) to consume new arrivals.
 
 ```json
@@ -145,7 +148,9 @@ GET /posts/recent?limit=50 → top 50
 ---
 
 ### `GET /posts/all?limit=25&offset=0`
-Returns all posts ever seen. Supports pagination via `limit` and `offset`.
+Returns all posts ever seen, indexed by the monitor.
+Supports pagination via `limit` and `offset`.
+Posts are returned sorted by `postId` ascending (oldest first).
 
 ```
 GET /posts/all              → all posts

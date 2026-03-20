@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const DATA_DIR = path.join(__dirname, '../data');
+const DATA_DIR = path.join(__dirname, 'data');
 const IDS_FILE = path.join(DATA_DIR, 'known_ids.json');
 const POSTS_FILE = path.join(DATA_DIR, 'known_posts.json');
 

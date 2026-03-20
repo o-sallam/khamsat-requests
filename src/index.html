@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khamsat Monitor | Live Dashboard</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <h1><span class="pulsing-dot" style="background-color: var(--primary);"></span> Khamsat Monitor</h1>
+            <div id="connection-status" class="status-badge">
+                <span class="pulsing-dot"></span>
+                <span id="status-text">Connected</span>
+            </div>
+        </header>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <span id="stat-known-ids" class="stat-value">0</span>
+                <span class="stat-label">Total IDs Spotted</span>
+            </div>
+            <div class="stat-card">
+                <span id="stat-all-posts" class="stat-value">0</span>
+                <span class="stat-label">Database Cache</span>
+            </div>
+            <div class="stat-card">
+                <span id="stat-poll-count" class="stat-value">0</span>
+                <span class="stat-label">Poll Cycles Run</span>
+            </div>
+            <div class="stat-card">
+                <span id="stat-last-poll" class="stat-value">--</span>
+                <span class="stat-label">Last Activity</span>
+            </div>
+        </section>
+
+        <main class="grid-layout">
+            <!-- LIVE FEED -->
+            <aside class="section-card">
+                <div class="section-header">
+                    <h2>Live Stream</h2>
+                    <span id="live-count" class="tag" style="background: rgba(56, 189, 248, 0.15); color: var(--accent);">0 New</span>
+                </div>
+                <div id="live-feed" class="scroll-area">
+                    <p style="text-align: center; color: var(--text-dim); padding: 2rem;">Waiting for new posts...</p>
+                </div>
+            </aside>
+
+            <!-- RECENT HISTORY -->
+            <section class="section-card">
+                <div class="section-header">
+                    <h2>Recent Archives</h2>
+                    <span class="tag">TOP 20</span>
+                </div>
+                <div id="recent-feed" class="scroll-area">
+                    <p style="text-align: center; color: var(--text-dim); padding: 2rem;">Loading...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const API_BASE = ''; // Same host
+        const elements = {
+            statusBadge: document.getElementById('connection-status'),
+            statusText: document.getElementById('status-text'),
+            statKnownIds: document.getElementById('stat-known-ids'),
+            statAllPosts: document.getElementById('stat-all-posts'),
+            statPollCount: document.getElementById('stat-poll-count'),
+            statLastPoll: document.getElementById('stat-last-poll'),
+            liveFeed: document.getElementById('live-feed'),
+            recentFeed: document.getElementById('recent-feed'),
+            liveCount: document.getElementById('live-count')
+        };
+
+        let newPostsRunningCount = 0;
+
+        function updateStatus(isOnline, err = null) {
+            elements.statusBadge.classList.toggle('polling', !isOnline);
+            elements.statusText.innerText = isOnline ? 'Live Connection' : (err || 'Reconnecting...');
+        }
+
+        function createPostItem(post) {
+            const div = document.createElement('div');
+            div.className = 'post-item';
+            
+            const postedTime = post.postedAt?.relative || '--';
+            const avatar = post.buyer?.avatar || 'https://via.placeholder.com/40';
+            const buyerName = post.buyer?.name || 'Unknown';
+            const title = post.title || 'Untitled Request';
+
+            div.innerHTML = `
+                <div class="post-header">
+                    <img src="${avatar}" class="avatar" alt="${buyerName}">
+                    <span class="buyer-name">${buyerName}</span>
+                </div>
+                <a href="${post.postUrl}" target="_blank" class="post-title">${title}</a>
+                <div class="post-meta">
+                    <span>${postedTime}</span>
+                    <span>ID: ${post.postId}</span>
+                </div>
+            `;
+            return div;
+        }
+
+        async function fetchStatus() {
+            try {
+                const res = await fetch(`${API_BASE}/status`);
+                const data = await res.json();
+                
+                elements.statKnownIds.innerText = data.knownIdsCount.toLocaleString();
+                elements.statAllPosts.innerText = data.allPostsCount.toLocaleString();
+                elements.statPollCount.innerText = data.pollCount.toLocaleString();
+                
+                if (data.lastPollAt) {
+                    const time = new Date(data.lastPollAt).toLocaleTimeString();
+                    elements.statLastPoll.innerText = time;
+                }
+                
+                updateStatus(true);
+            } catch (err) {
+                updateStatus(false, 'Status Offline');
+            }
+        }
+
+        async function fetchRecent() {
+            try {
+                const res = await fetch(`${API_BASE}/posts/recent?limit=20`);
+                const data = await res.json();
+                
+                elements.recentFeed.innerHTML = '';
+                data.posts.forEach(post => {
+                    elements.recentFeed.appendChild(createPostItem(post));
+                });
+            } catch (err) {
+                console.error('Failed to fetch recent', err);
+            }
+        }
+
+        async function pollNew() {
+            try {
+                const res = await fetch(`${API_BASE}/posts/new`);
+                const data = await res.json();
+                
+                if (data.count > 0) {
+                    newPostsRunningCount += data.count;
+                    elements.liveCount.innerText = `${newPostsRunningCount} New`;
+
+                    // Remove initial message if present
+                    if (elements.liveFeed.querySelector('p')) elements.liveFeed.innerHTML = '';
+
+                    // Add to top of live feed
+                    data.posts.forEach(post => {
+                        const item = createPostItem(post);
+                        elements.liveFeed.prepend(item);
+                    });
+                    
+                    // Limit live feed to 50 items
+                    while (elements.liveFeed.children.length > 50) {
+                        elements.liveFeed.removeChild(elements.liveFeed.lastChild);
+                    }
+                }
+                updateStatus(true);
+            } catch (err) {
+                updateStatus(false, 'Live Stream Failed');
+            }
+        }
+
+        // Initialize
+        fetchStatus();
+        fetchRecent();
+        
+        // Polling intervals
+        setInterval(fetchStatus, 5000);
+        setInterval(pollNew, 10000);
+        setInterval(fetchRecent, 60000); // Update recent list every minute
+    </script>
+</body>
+</html>

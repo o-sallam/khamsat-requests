@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const path = require('path');
 const poller = require('./poller');
 const store = require('./store');
 
@@ -7,6 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'src')));
 
 // ─── CORS (open for local dev) ────────────────────────────────────────────────
 app.use((req, res, next) => {
@@ -176,5 +178,5 @@ poller.start();
 
 app.listen(PORT, () => {
   console.log(`\n🟢 Khamsat Monitor running on http://localhost:${PORT}`);
-  console.log(`   Polling every ${process.env.POLL_INTERVAL_MS / 1000}s\n`);
+  console.log(`   Polling every ${Number(process.env.POLL_INTERVAL_MS) / 1000}s\n`);
 });
