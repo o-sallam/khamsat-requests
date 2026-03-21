@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="dashboard-container">
@@ -38,26 +39,17 @@
             </div>
         </section>
 
-        <main class="grid-layout">
-            <!-- LIVE FEED -->
-            <aside class="section-card">
+        <main>
+            <!-- RECENT HISTORY (Full Width) -->
+            <section class="section-card full-width">
                 <div class="section-header">
-                    <h2>Live Stream</h2>
-                    <span id="live-count" class="tag" style="background: rgba(56, 189, 248, 0.15); color: var(--accent);">0 New</span>
+                    <div class="header-title">
+                        <h2>أحدث الطلبات (Recent Requests)</h2>
+                        <span class="tag pulse-bg">Live Updates</span>
+                    </div>
                 </div>
-                <div id="live-feed" class="scroll-area">
-                    <p style="text-align: center; color: var(--text-dim); padding: 2rem;">Waiting for new posts...</p>
-                </div>
-            </aside>
-
-            <!-- RECENT HISTORY -->
-            <section class="section-card">
-                <div class="section-header">
-                    <h2>Recent Archives</h2>
-                    <span class="tag">TOP 20</span>
-                </div>
-                <div id="recent-feed" class="scroll-area">
-                    <p style="text-align: center; color: var(--text-dim); padding: 2rem;">Loading...</p>
+                <div id="recent-feed" class="scroll-area fancy-scrollbar">
+                    <div class="placeholder-msg">جاري تحميل الطلبات...</div>
                 </div>
             </section>
         </main>
@@ -72,12 +64,80 @@
             statAllPosts: document.getElementById('stat-all-posts'),
             statPollCount: document.getElementById('stat-poll-count'),
             statLastPoll: document.getElementById('stat-last-poll'),
-            liveFeed: document.getElementById('live-feed'),
             recentFeed: document.getElementById('recent-feed'),
-            liveCount: document.getElementById('live-count')
         };
 
-        let newPostsRunningCount = 0;
+        // --- Time Parsing & Formatting ---
+        function getRealPostTime(post) {
+            // Anchor to the exact moment our script saw it
+            const anchorTime = post.detectedAt ? new Date(post.detectedAt) : new Date();
+            
+            // Khamsat's GMT timestamp is often timezone-shifted incorrectly (in the future or past).
+            // To get perfect sync with Khamsat, we parse their exact Arabic phrase from the HTML text 
+            // ("منذ 13 دقيقة", "منذ ساعتين", "أقل من دقيقة") and subtract it from our safe anchor Time.
+            let subtractMs = 0;
+            const text = post.timing?.posted?.text || '';
+            
+            if (text.includes('أقل من دقيقة') || text.includes('ثاني')) {
+                subtractMs = 5 * 1000; // ~5 seconds
+            } else if (text.includes('دقيقة') || text.includes('دقائق')) {
+                const match = text.match(/(\d+)/);
+                if (match) subtractMs = parseInt(match[1]) * 60000;
+                else subtractMs = text.includes('دقيقتين') ? 2 * 60000 : 0; // For 'دقيقتين'
+            } else if (text.includes('ساعة') || text.includes('ساعات')) {
+                let mins = 0;
+                if (text.includes('ساعتين')) mins = 120;
+                else if (text.includes('ساعة و')) mins = 60; // Has fraction
+                else {
+                    const match = text.match(/(\d+)/);
+                    if (match) mins = parseInt(match[1]) * 60;
+                }
+                
+                // Parse optional trailing minutes
+                const minMatch = text.match(/و ?(\d+) دقيقة/);
+                if (minMatch) mins += parseInt(minMatch[1]);
+                
+                subtractMs = mins * 60000;
+            } else if (text.includes('يوم') || text.includes('أيام')) {
+                const match = text.match(/(\d+)/);
+                if (match) subtractMs = parseInt(match[1]) * 86400000;
+                else if (text.includes('يومين')) subtractMs = 2 * 86400000;
+                else subtractMs = 86400000;
+            }
+            
+            // If the text parser completely fails, fallback to the anchor directly.
+            return new Date(anchorTime.getTime() - subtractMs);
+        }
+
+        function timeAgoArabic(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            if (seconds < 60) return 'منذ ثواني';
+            const minutes = Math.floor(seconds / 60);
+            if (minutes === 1) return 'منذ دقيقة';
+            if (minutes === 2) return 'منذ دقيقتين';
+            if (minutes < 11) return `منذ ${minutes} دقائق`;
+            if (minutes < 60) return `منذ ${minutes} دقيقة`;
+            const hours = Math.floor(minutes / 60);
+            if (hours === 1) return 'منذ ساعة';
+            if (hours === 2) return 'منذ ساعتين';
+            if (hours < 11) return `منذ ${hours} ساعات`;
+            if (hours < 24) return `منذ ${hours} ساعة`;
+            const days = Math.floor(hours / 24);
+            if (days === 1) return 'منذ يوم';
+            if (days === 2) return 'منذ يومين';
+            if (days < 11) return `منذ ${days} أيام`;
+            return `منذ ${days} يوماً`;
+        }
+
+        // Periodically update all timestamps on the page
+        setInterval(() => {
+            document.querySelectorAll('.time-ago').forEach(el => {
+                const ts = el.getAttribute('data-timestamp');
+                if (ts) {
+                    el.innerText = timeAgoArabic(new Date(ts));
+                }
+            });
+        }, 15000); // refresh every 15s
 
         function updateStatus(isOnline, err = null) {
             elements.statusBadge.classList.toggle('polling', !isOnline);
@@ -86,23 +146,43 @@
 
         function createPostItem(post) {
             const div = document.createElement('div');
-            div.className = 'post-item';
+            div.className = 'post-item glass-effect';
             
-            const postedTime = post.timing?.posted?.text || post.postedAt?.relative || '--';
-            const avatar = post.requester?.avatar || post.buyer?.avatar || 'https://via.placeholder.com/40';
-            const buyerName = post.requester?.name || post.buyer?.name || 'Unknown';
-            const title = post.title || 'Untitled Request';
+            // Mouse tracking for glassmorphism hover effect
+            div.onmousemove = e => {
+                const rect = div.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                div.style.setProperty('--mouse-x', `${x}px`);
+                div.style.setProperty('--mouse-y', `${y}px`);
+            };
+            
+            const dateObj = getRealPostTime(post);
+
+            const avatar = post.requester?.avatar || post.buyer?.avatar || 'https://via.placeholder.com/48';
+            const buyerName = post.requester?.name || post.buyer?.name || 'مستخدم غير معروف';
+            const title = post.title || 'طلب بدون عنوان';
             const postUrl = post.postUrl && post.postUrl.startsWith('http') ? post.postUrl : `https://khamsat.com${post.postUrl}`;
+            
+            const timeAgoText = timeAgoArabic(dateObj);
+            const absoluteTime = dateObj.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
 
             div.innerHTML = `
-                <div class="post-header">
-                    <img src="${avatar}" class="avatar" alt="${buyerName}">
-                    <span class="buyer-name">${buyerName}</span>
-                </div>
-                <a href="${postUrl}" target="_blank" class="post-title">${title}</a>
-                <div class="post-meta">
-                    <span>${postedTime}</span>
-                    <span>ID: ${post.id || post.postId}</span>
+                <div class="post-item-layout">
+                    <img src="${avatar}" class="avatar-lg" alt="${buyerName}" loading="lazy">
+                    <div class="post-content">
+                        <a href="${postUrl}" target="_blank" class="post-title-link">${title}</a>
+                        <div class="post-meta-details">
+                            <span class="buyer-name-tag"><i class="fa-solid fa-user"></i> ${buyerName}</span>
+                            <span class="time-ago tag-subtle" data-timestamp="${dateObj.toISOString()}">
+                                <i class="fa-solid fa-clock"></i> ${timeAgoText}
+                            </span>
+                            <span class="absolute-time text-dim">(${absoluteTime})</span>
+                        </div>
+                    </div>
+                    <div class="post-action">
+                        <span class="id-tag">#${post.id || post.postId.replace('forum_post-','')}</span>
+                    </div>
                 </div>
             `;
             return div;
@@ -130,10 +210,15 @@
 
         async function fetchRecent() {
             try {
-                const res = await fetch(`${API_BASE}/posts/recent?limit=20`);
+                const res = await fetch(`${API_BASE}/posts/recent?limit=30`);
                 const data = await res.json();
                 
                 elements.recentFeed.innerHTML = '';
+                if (data.posts.length === 0) {
+                    elements.recentFeed.innerHTML = '<div class="placeholder-msg">لا توجد طلبات بعد.</div>';
+                    return;
+                }
+                
                 data.posts.forEach(post => {
                     elements.recentFeed.appendChild(createPostItem(post));
                 });
@@ -142,32 +227,33 @@
             }
         }
 
+        // Since we dropped the live feed block, we can just continuously refresh the recent feed smoothly.
+        // Or optimally, fetch `/posts/new` and prepend them to recent feed to avoid full re-renders.
         async function pollNew() {
             try {
                 const res = await fetch(`${API_BASE}/posts/new`);
                 const data = await res.json();
                 
                 if (data.count > 0) {
-                    newPostsRunningCount += data.count;
-                    elements.liveCount.innerText = `${newPostsRunningCount} New`;
+                    // Remove placeholder if present
+                    if (elements.recentFeed.querySelector('.placeholder-msg')) {
+                        elements.recentFeed.innerHTML = '';
+                    }
 
-                    // Remove initial message if present
-                    if (elements.liveFeed.querySelector('p')) elements.liveFeed.innerHTML = '';
-
-                    // Add to top of live feed
+                    // Prepend new posts
                     data.posts.forEach(post => {
                         const item = createPostItem(post);
-                        elements.liveFeed.prepend(item);
+                        elements.recentFeed.prepend(item);
                     });
                     
-                    // Limit live feed to 50 items
-                    while (elements.liveFeed.children.length > 50) {
-                        elements.liveFeed.removeChild(elements.liveFeed.lastChild);
+                    // Limit list size visually to prevent infinite DOM growth
+                    while (elements.recentFeed.children.length > 50) {
+                        elements.recentFeed.removeChild(elements.recentFeed.lastChild);
                     }
                 }
                 updateStatus(true);
             } catch (err) {
-                updateStatus(false, 'Live Stream Failed');
+                updateStatus(false, 'Live Check Failed');
             }
         }
 
@@ -177,8 +263,7 @@
         
         // Polling intervals
         setInterval(fetchStatus, 5000);
-        setInterval(pollNew, 10000);
-        setInterval(fetchRecent, 60000); // Update recent list every minute
+        setInterval(pollNew, 5000); // Check for new items faster so UI updates as soon as server finds them
     </script>
 </body>
 </html>
