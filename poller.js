@@ -78,9 +78,16 @@ async function poll() {
           console.log(`[poller] Probing new post ID ${idStr} with custom URL...`);
           // Pass the postUrl explicitly if coming from AJAX
           const probeRes = await probeId(post.id, post.postUrl);
-          if (probeRes.status === 'new' && probeRes.post?.postDetails) {
-            post.postDetails = probeRes.post.postDetails;
-            console.log(`[poller] ✅ Acquired details for ID ${idStr}`);
+          if (probeRes.status === 'new' && probeRes.post) {
+            if (probeRes.post.postDetails) {
+              post.postDetails = probeRes.post.postDetails;
+              console.log(`[poller] ✅ Acquired details for ID ${idStr}`);
+            }
+            if (probeRes.post.requester?.userType) {
+              post.requester.userType = probeRes.post.requester.userType;
+              post.requester.level = probeRes.post.requester.userType; // sync both
+              console.log(`[poller] ✅ Acquired user type for ${post.requester.name}: ${post.requester.userType}`);
+            }
           }
         } catch (e) {
           console.error(`[poller] ⚠️ Failed to probe ID ${idStr}:`, e.message);
@@ -95,20 +102,19 @@ async function poll() {
         }
         newPostsBuffer.push(post);
 
-        // --- ATOMIC SAVE: ensure data is written to disk immediately ---
+        // --- ATOMIC SAVE ---
         store.saveKnownIds(knownIds);
         store.saveKnownPosts(allPosts);
       }
     }
 
-    // --- PREDICTIVE PROBING: Check next IDs (+1, +2, +3) ---
+    // --- PREDICTIVE PROBING ---
     const lastMaxId = getMaxId();
     console.log(`[poller] Predictive probing starting from ID ${lastMaxId + 1}...`);
     for (let nextId = lastMaxId + 1; nextId <= lastMaxId + 3; nextId++) {
       const idStr = String(nextId);
       if (knownIds.has(idStr)) continue;
 
-      // --- ADDED GAP: don't slam the server ---
       await sleep(2500 + Math.random() * 2500);
 
       try {
@@ -242,6 +248,7 @@ function normalizeScrapePost(raw, numId, strId) {
     postId: `forum_post-${strId}`,
     index: raw.index || 0,
     title: raw.title || null,
+    postDetails: raw.postDetails || null,
     postUrl: raw.postUrl
       ? (raw.postUrl.startsWith('http') ? raw.postUrl : `https://khamsat.com${raw.postUrl}`)
       : `https://khamsat.com/community/requests/${strId}`,
@@ -251,6 +258,8 @@ function normalizeScrapePost(raw, numId, strId) {
         ? (buyer.profileUrl.startsWith('http') ? buyer.profileUrl : `https://khamsat.com${buyer.profileUrl}`)
         : null,
       avatar: buyer.avatar || null,
+      userType: buyer.userType || buyer.level || null,
+      level: buyer.level || buyer.userType || null,
     },
     timing: {
       posted: {
@@ -265,6 +274,49 @@ function normalizeScrapePost(raw, numId, strId) {
   };
 }
 
+/**
+ * Re-scan posts that are missing postDetails or buyer level.
+ * Fetches full page content for each post and updates the stored data.
+ */
+async function rescanPosts(posts) {
+  console.log(`[poller] Re-scanning ${posts.length} posts for missing details...`);
+  
+  for (const post of posts) {
+    const idStr = String(post.id);
+    
+    // Add delay to avoid rate limiting
+    await sleep(3000 + Math.random() * 2000);
+    
+    try {
+      console.log(`[poller] Re-scanning post ID ${idStr}...`);
+      const probeRes = await probeId(post.id, post.postUrl);
+      
+      if (probeRes.status === 'new' && probeRes.post) {
+        const idx = allPosts.findIndex(p => String(p.id) === idStr);
+        if (idx !== -1) {
+          // Update with new details
+          if (probeRes.post.postDetails) {
+            allPosts[idx].postDetails = probeRes.post.postDetails;
+            console.log(`[poller] ✅ Updated postDetails for ID ${idStr}`);
+          }
+          if (probeRes.post.requester?.userType) {
+            allPosts[idx].requester = allPosts[idx].requester || {};
+            allPosts[idx].requester.userType = probeRes.post.requester.userType;
+            allPosts[idx].requester.level = probeRes.post.requester.userType;
+            console.log(`[poller] ✅ Updated user type for ID ${idStr}: ${probeRes.post.requester.userType}`);
+          }
+          // Save after each successful update
+          store.saveKnownPosts(allPosts);
+        }
+      }
+    } catch (e) {
+      console.error(`[poller] ⚠️ Re-scan failed for ID ${idStr}:`, e.message);
+    }
+  }
+  
+  console.log(`[poller] Re-scan complete.`);
+}
+
 module.exports = {
   start, stop,
   drainNewPosts,
@@ -274,4 +326,5 @@ module.exports = {
   seedIds,
   seedFullPosts,
   poll,
+  rescanPosts,
 };

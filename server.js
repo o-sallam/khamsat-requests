@@ -156,6 +156,33 @@ app.post('/poll/now', async (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+// POST /rescan
+// Re-scan posts that are missing postDetails or buyer level.
+// Body: { "limit": 50 } (optional, defaults to 20)
+// ─────────────────────────────────────────────────────────────────────────────
+app.post('/rescan', async (req, res) => {
+  const limit = Math.min(parseInt(req.query.limit) || parseInt(req.body?.limit) || 20, 100);
+  
+  // Find posts missing details
+  const missingDetails = poller.getAllPosts()
+    .filter(p => !p.postDetails || (!p.requester?.level && !p.requester?.userType))
+    .slice(0, limit);
+  
+  if (missingDetails.length === 0) {
+    return res.json({ ok: true, message: 'All posts have details.', scanned: 0 });
+  }
+  
+  res.json({ 
+    ok: true, 
+    message: `Starting re-scan for ${missingDetails.length} posts...`,
+    posts: missingDetails.map(p => p.id)
+  });
+  
+  // Fire async
+  poller.rescanPosts(missingDetails).catch(console.error);
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // 404 fallback
 // ─────────────────────────────────────────────────────────────────────────────
 app.use((req, res) => {

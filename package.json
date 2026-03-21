@@ -20,7 +20,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.1",
     "node-fetch": "^2.7.0",
-    "node-html-parser": "^6.1.13"
+    "node-html-parser": "^6.1.13",
+    "puppeteer": "^24.40.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"

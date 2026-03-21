@@ -237,6 +237,7 @@
                         </div>
                         <div class="post-meta-details">
                             <span class="buyer-name-tag"><i class="fa-solid fa-user"></i> ${buyerName}</span>
+                            ${post.requester?.level ? `<span class="buyer-level-tag"><i class="fa-solid fa-shield-halved"></i> ${post.requester.level}</span>` : ''}
                             <span class="time-ago tag-subtle" data-timestamp="${isoTime}">
                                 <i class="fa-solid fa-clock"></i> ${timeAgoText}
                             </span>

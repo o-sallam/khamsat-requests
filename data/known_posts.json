@@ -1,27 +1,56 @@
 [
   {
+    "id": 784052,
+    "idString": "784052",
+    "postId": "forum_post-784052",
+    "index": 0,
+    "title": "ابحث عن مساعدين موجودين في اوربا و بريطانيا",
+    "postDetails": "ابحث عن مساعدين موجودين في اوربا و بريطانيا اشخاص جاهزين للعمل والمهام",
+    "postUrl": "/community/requests/784052",
+    "requester": {
+      "name": ".Hank A",
+      "profileUrl": "/user/its8zot",
+      "avatar": "https://avatars.hsoubcdn.com/283b8ba42ac6708235940f0f962b8ab7?s=128",
+      "userType": null,
+      "level": null
+    },
+    "userType": null,
+    "timing": {
+      "posted": {
+        "text": "منذ دقيقة",
+        "timestamp": "21/03/2026 09:28:43 GMT"
+      },
+      "lastReplyMobile": ""
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-21T09:29:56.022Z",
+    "discoveredVia": "probe"
+  },
+  {
     "id": 784050,
     "idString": "784050",
     "postId": "forum_post-784050",
     "index": 0,
     "title": "مطلوب عمل قوائم مالية",
-    "postDetails": "نص الطلب الكامل من داخل صفحة الموضوع...",
     "postUrl": "/community/requests/784050-%D9%85%D8%B7%D9%84%D9%88%D8%A8-%D8%B9%D9%85%D9%84-%D9%82%D9%88%D8%A7%D8%A6%D9%85-%D9%85%D8%A7%D9%84%D9%8A%D8%A9",
     "requester": {
       "name": ".Mahmoud S",
       "profileUrl": "/user/mahmoudsh100",
-      "avatar": "https://avatars.hsoubcdn.com/032520a0423b19df3a94cb6bb5509eb6?s=128"
+      "avatar": "https://avatars.hsoubcdn.com/032520a0423b19df3a94cb6bb5509eb6?s=128",
+      "userType": "مشتري مميز",
+      "level": "مشتري مميز"
     },
     "timing": {
       "posted": {
-        "text": "منذ 4 دقائق",
+        "text": "منذ 3 ساعات و18 دقيقة",
         "timestamp": "21/03/2026 06:11:13 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ 4 دقائق"
+      "lastReplyMobile": "آخر تفاعل منذ ساعة و9 دقائق"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T06:15:47.596Z",
-    "discoveredVia": "ajax"
+    "detectedAt": "2026-03-21T09:29:36.695Z",
+    "discoveredVia": "ajax",
+    "postDetails": "السلام عليكم ورحمة الله وبركاته\nاريد مدير حسابات او مدير مالي خبره في اعداد القوائم المالية للشركات\nالمطلوب عمل قوائم مالية ( ميزان مراجعة - قائمة دخل - ميزانية عمومية - قائمة التدفقات النقدية )\nما سأزودك به مصروفات كامله للعام مصنفة حسب نوع المصروف ..\nايرادات كامله خلال العام مصنفة ايضا حسب نوع الايراد ..\n\nالمطلوب تسليم الملف اكسل بها كافة القوائم وكذلك ملفات PDF لكل قائمة\nالمطلوب عام واحد الآن ..  اذا كان السعر جيد والعمل تم بامتياز .. لدي 4 سنوات أخرى"
   },
   {
     "id": 784048,
@@ -37,13 +66,36 @@
     },
     "timing": {
       "posted": {
-        "text": "منذ دقيقة",
+        "text": "منذ 3 ساعات و5 دقائق",
         "timestamp": "21/03/2026 05:47:53 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ دقيقة"
+      "lastReplyMobile": "آخر تفاعل أقل من دقيقة"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T05:49:18.032Z",
+    "detectedAt": "2026-03-21T08:53:30.921Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784047,
+    "idString": "784047",
+    "postId": "forum_post-784047",
+    "index": 0,
+    "title": "مونتاج فيديوهات القرآن الكريم لقناة اليوتيوب",
+    "postUrl": "/community/requests/784047-%D9%85%D9%88%D9%86%D8%AA%D8%A7%D8%AC-%D9%81%D9%8A%D8%AF%D9%8A%D9%88%D9%87%D8%A7%D8%AA-%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86-%D8%A7%D9%84%D9%83%D8%B1%D9%8A%D9%85-%D9%84%D9%82%D9%86%D8%A7%D8%A9-%D8%A7%D9%84%D9%8A%D9%88%D8%AA%D9%8A%D9%88%D8%A8",
+    "requester": {
+      "name": "أسامة ق.",
+      "profileUrl": "/user/okafx45",
+      "avatar": "https://avatars.hsoubcdn.com/c99e7469367b23d93edf9d9bdc5d38cf?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ 4 ساعات و26 دقيقة",
+        "timestamp": "21/03/2026 03:49:29 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 4 ساعات و26 دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-21T08:16:13.561Z",
     "discoveredVia": "ajax"
   },
   {
@@ -438,6 +490,29 @@
     "discoveredVia": "ajax"
   },
   {
+    "id": 783984,
+    "idString": "783984",
+    "postId": "forum_post-783984",
+    "index": 0,
+    "title": "مطلوب تصميم بنرين + ٦ صور منتج",
+    "postUrl": "/community/requests/783984-%D9%85%D8%B7%D9%84%D9%88%D8%A8-%D8%AA%D8%B5%D9%85%D9%8A%D9%85-%D8%A8%D9%86%D8%B1%D9%8A%D9%86-%D8%B5%D9%88%D8%B1-%D9%85%D9%86%D8%AA%D8%AC",
+    "requester": {
+      "name": "عبدالاله م.",
+      "profileUrl": "/user/srklyez",
+      "avatar": "https://avatars.hsoubcdn.com/20a53430d0bc1dbf89f8af848793d8e8?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ يوم و16 ساعة",
+        "timestamp": "19/03/2026 16:19:17 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل أقل من دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-21T08:37:36.900Z",
+    "discoveredVia": "ajax"
+  },
+  {
     "id": 783982,
     "idString": "783982",
     "postId": "forum_post-783982",
@@ -668,6 +743,29 @@
     "discoveredVia": "ajax"
   },
   {
+    "id": 783911,
+    "idString": "783911",
+    "postId": "forum_post-783911",
+    "index": 0,
+    "title": "مطلوب إدخال بيانات من ملفات PDF إلى Excel أو Word",
+    "postUrl": "/community/requests/783911-%D9%85%D8%B7%D9%84%D9%88%D8%A8-%D8%A5%D8%AF%D8%AE%D8%A7%D9%84-%D8%A8%D9%8A%D8%A7%D9%86%D8%A7%D8%AA-%D9%85%D9%86-%D9%85%D9%84%D9%81%D8%A7%D8%AA-pdf-%D8%A5%D9%84%D9%89-excel-%D8%A3%D9%88-word",
+    "requester": {
+      "name": ".Safaa S",
+      "profileUrl": "/user/safaa_46",
+      "avatar": "https://avatars.hsoubcdn.com/e48cb22b34c81a9953fb7aa9d9bb9cd9?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ يومين و22 ساعة",
+        "timestamp": "18/03/2026 10:11:04 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 3 دقائق"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-21T08:26:18.084Z",
+    "discoveredVia": "ajax"
+  },
+  {
     "id": 783883,
     "idString": "783883",
     "postId": "forum_post-783883",
@@ -737,6 +835,52 @@
     "discoveredVia": "ajax"
   },
   {
+    "id": 783784,
+    "idString": "783784",
+    "postId": "forum_post-783784",
+    "index": 0,
+    "title": "أريد حد مفرغ صوتي",
+    "postUrl": "/community/requests/783784-%D8%A3%D8%B1%D9%8A%D8%AF-%D8%AD%D8%AF-%D9%85%D9%81%D8%B1%D8%BA-%D8%B5%D9%88%D8%AA%D9%8A",
+    "requester": {
+      "name": "احمد ا.",
+      "profileUrl": "/user/ahm4547",
+      "avatar": "https://avatars.hsoubcdn.com/13d0436eca8cabb5f0fe360f6817eafd?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ 5 أيام وساعة",
+        "timestamp": "16/03/2026 07:40:00 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 4 دقائق"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-21T09:14:38.950Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 783692,
+    "idString": "783692",
+    "postId": "forum_post-783692",
+    "index": 0,
+    "title": "مطلوب خدمة عملاء",
+    "postUrl": "/community/requests/783692-%D9%85%D8%B7%D9%84%D9%88%D8%A8-%D8%AE%D8%AF%D9%85%D8%A9-%D8%B9%D9%85%D9%84%D8%A7%D8%A1",
+    "requester": {
+      "name": "مرام آ.",
+      "profileUrl": "/user/maram200",
+      "avatar": "https://avatars.hsoubcdn.com/5181e2fa5e97cd0bba2810c4f14d7ab9?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ 6 أيام و17 ساعة",
+        "timestamp": "14/03/2026 15:40:59 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل أقل من دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-21T09:07:49.541Z",
+    "discoveredVia": "ajax"
+  },
+  {
     "id": 783672,
     "idString": "783672",
     "postId": "forum_post-783672",
@@ -780,6 +924,75 @@
     },
     "lastReplier": null,
     "detectedAt": "2026-03-21T04:11:53.396Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 783459,
+    "idString": "783459",
+    "postId": "forum_post-783459",
+    "index": 0,
+    "title": "مطلوب موظفات للرد على عملاء",
+    "postUrl": "/community/requests/783459-%D9%85%D8%B7%D9%84%D9%88%D8%A8-%D9%85%D9%88%D8%B8%D9%81%D8%A7%D8%AA-%D9%84%D9%84%D8%B1%D8%AF-%D8%B9%D9%84%D9%89-%D8%B9%D9%85%D9%84%D8%A7%D8%A1",
+    "requester": {
+      "name": ".Heba A",
+      "profileUrl": "/user/heba_aboalwan",
+      "avatar": "https://avatars.hsoubcdn.com/25d33e3fa41b473dd94fd87c023ac2cc?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ 10 أيام و14 ساعة",
+        "timestamp": "10/03/2026 18:48:00 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-21T09:06:44.153Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 783296,
+    "idString": "783296",
+    "postId": "forum_post-783296",
+    "index": 0,
+    "title": "تصميم متجر و صفحات هبوط على الووردبريس",
+    "postUrl": "/community/requests/783296-%D8%AA%D8%B5%D9%85%D9%8A%D9%85-%D9%85%D8%AA%D8%AC%D8%B1-%D9%88-%D8%B5%D9%81%D8%AD%D8%A7%D8%AA-%D9%87%D8%A8%D9%88%D8%B7-%D8%B9%D9%84%D9%89-%D8%A7%D9%84%D9%88%D9%88%D8%B1%D8%AF%D8%A8%D8%B1%D9%8A%D8%B3",
+    "requester": {
+      "name": "راكان ا.",
+      "profileUrl": "/user/%D8%B1%D8%A7%D9%83%D8%A7%D9%86-%D8%A7%D9%84%D8%AD%D8%B1%D8%A8%D9%8A1",
+      "avatar": "https://avatars.hsoubcdn.com/41977b5f191d807496fe67d17ee07aa7?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ 12 يوم و19 ساعة",
+        "timestamp": "08/03/2026 13:07:10 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ دقيقتين"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-21T08:28:50.568Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 783284,
+    "idString": "783284",
+    "postId": "forum_post-783284",
+    "index": 0,
+    "title": "تفريغ صوتي",
+    "postUrl": "/community/requests/783284-%D8%AA%D9%81%D8%B1%D9%8A%D8%BA-%D8%B5%D9%88%D8%AA%D9%8A",
+    "requester": {
+      "name": ".Zineb Z",
+      "profileUrl": "/user/zinebmhmd007",
+      "avatar": "https://avatars.hsoubcdn.com/1d2155c9374c0d498359fab1cf20eed7?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ 12 يوم و22 ساعة",
+        "timestamp": "08/03/2026 11:05:16 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-21T09:09:56.579Z",
     "discoveredVia": "ajax"
   }
 ]
