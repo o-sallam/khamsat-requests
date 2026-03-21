@@ -22,19 +22,19 @@
             </div>
 
             <div class="stats-compact-bar">
-                <div class="stat-mini" title="Total IDs Spotted (إجمالي المعرفات)">
+                <div class="stat-mini" data-tooltip="إجمالي المعرفات (Total IDs)">
                     <i class="fa-solid fa-fingerprint"></i>
                     <span id="stat-known-ids">0</span>
                 </div>
-                <div class="stat-mini" title="Database Cache (الطلبات المحفوظة)">
+                <div class="stat-mini" data-tooltip="الطلبات المحفوظة (Cached Posts)">
                     <i class="fa-solid fa-database"></i>
                     <span id="stat-all-posts">0</span>
                 </div>
-                <div class="stat-mini" title="Poll Cycles Run (دورات الفحص)">
+                <div class="stat-mini" data-tooltip="دورات الفحص (Poll Cycles)">
                     <i class="fa-solid fa-bolt"></i>
                     <span id="stat-poll-count">0</span>
                 </div>
-                <div class="stat-mini" title="Last Activity (آخر تحديث)">
+                <div class="stat-mini" data-tooltip="آخر نشاط (Last Poll)">
                     <i class="fa-solid fa-clock"></i>
                     <span id="stat-last-poll" dir="ltr">--</span>
                 </div>
@@ -50,8 +50,8 @@
 
         <main>
             <!-- RECENT HISTORY (Full Width) -->
-            <section>
-                <div id="recent-feed" class="scroll-area fancy-scrollbar">
+            <section class="scroll-area fancy-scrollbar">
+                <div id="recent-feed">
                     <div class="placeholder-msg">جاري تحميل الطلبات...</div>
                 </div>
             </section>
