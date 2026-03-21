@@ -23,13 +23,15 @@ body {
   background-color: var(--bg);
   color: var(--text);
   line-height: 1.5;
-  padding: 0; /* Remove body padding */
+  padding: 0;
+  /* Remove body padding */
   min-height: 100vh;
 }
 
 .dashboard-container {
   padding: 2rem;
-  margin-left: 280px; /* Space for the sidebar */
+  margin-left: 280px;
+  /* Space for the sidebar */
   max-width: none;
   min-height: 100vh;
 }
@@ -241,7 +243,8 @@ body {
   }
 
   .stat-mini span {
-    display: none; /* Hide numbers on small screens to save space */
+    display: none;
+    /* Hide numbers on small screens to save space */
   }
 
   .stat-mini {
@@ -261,13 +264,13 @@ main {
 .scroll-area {
   max-height: calc(100vh - 4rem);
   overflow-y: auto;
-  padding-right: 0.5rem;
+  padding: 0 0 0 1rem;
 }
 
 #recent-feed {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 0.4rem;
   padding: 1rem 0;
 }
 
@@ -288,7 +291,6 @@ main {
 .scroll-area {
   flex: 1;
   overflow-y: auto;
-  padding: 1.5rem;
   /* Removed display: flex to prevent items from squishing due to flex-shrink */
 }
 
