@@ -172,6 +172,20 @@ function parsePostPage(html, id, url) {
   const title = titleEl ? titleEl.text.trim() : null;
   if (!title) return null;
 
+  const articleEl = root.querySelector('article.replace_urls');
+  
+  let content = null;
+  if (articleEl) {
+    let rawHtml = articleEl.innerHTML;
+    // Replace <br> and <p> with spaces to avoid merging words
+    rawHtml = rawHtml.replace(/<(br|p|div)\s*\/?>/gi, ' ');
+    // Strip all HTML tags
+    rawHtml = rawHtml.replace(/<[^>]+>/g, '');
+    // Replace html entities (basic ones)
+    rawHtml = rawHtml.replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+    content = rawHtml.replace(/\s+/g, ' ').trim();
+  }
+
   const requesterLink = root.querySelector('.details-list a.user, a.user');
   const requesterAvatar = root.querySelector('.avatar-td img, .user-info img');
 
@@ -181,11 +195,21 @@ function parsePostPage(html, id, url) {
     avatar: requesterAvatar ? requesterAvatar.getAttribute('src') : null,
   };
 
-  const timeSpan = root.querySelector('span[title]');
+  let timeText = '';
+  let timeStr = '';
+  const timeSpans = root.querySelectorAll('span[title]');
+  for (const span of timeSpans) {
+      if (span.getAttribute('title')?.includes('GMT')) {
+          timeText = span.text.trim();
+          timeStr = span.getAttribute('title');
+          break;
+      }
+  }
+
   const timing = {
     posted: {
-      text: timeSpan ? timeSpan.text.trim() : '',
-      timestamp: timeSpan ? timeSpan.getAttribute('title') : '',
+      text: timeText,
+      timestamp: timeStr,
     },
     lastReplyMobile: '',
   };
@@ -196,6 +220,7 @@ function parsePostPage(html, id, url) {
     postId: `forum_post-${id}`,
     index: 0,
     title,
+    content, // The newly added content
     postUrl: `/community/requests/${id}`,
     requester,
     timing,

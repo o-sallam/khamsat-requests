@@ -1,4 +1,4 @@
-const { fetchLatestPosts } = require('./probe');
+const { fetchLatestPosts, probeId } = require('./probe');
 const store = require('./store');
 
 const POLL_INTERVAL_MS = parseInt(process.env.POLL_INTERVAL_MS) || 300000;
@@ -63,6 +63,19 @@ async function poll() {
       // If we don't have the full post object saved, it's new to us.
       const hasFullPost = allPosts.some(p => String(p.id) === idStr);
       if (!hasFullPost) {
+        
+        // Fetch article content immediately!
+        try {
+          console.log(`[poller] Probing new post ID ${idStr} for full content...`);
+          const probeRes = await probeId(post.id);
+          if (probeRes.status === 'new' && probeRes.post?.content) {
+            post.content = probeRes.post.content;
+            console.log(`[poller] ✅ Acquired content for ID ${idStr}`);
+          }
+        } catch (e) {
+          console.error(`[poller] ⚠️ Failed to probe ID ${idStr}:`, e.message);
+        }
+
         freshPosts.push(post);
         knownIds.add(idStr);
         allPosts.push(post);

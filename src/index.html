@@ -12,32 +12,37 @@
 </head>
 <body>
     <div class="dashboard-container">
-        <header>
-            <h1><span class="pulsing-dot" style="background-color: var(--primary);"></span> Khamsat Monitor</h1>
-            <div id="connection-status" class="status-badge">
-                <span class="pulsing-dot"></span>
-                <span id="status-text">Connected</span>
+        <header class="main-header">
+            <div class="header-left">
+                <h1><span class="pulsing-dot" style="background-color: var(--primary);"></span> Khamsat Monitor</h1>
+            </div>
+            
+            <div class="stats-compact-bar">
+                <div class="stat-mini" title="Total IDs Spotted (إجمالي المعرفات)">
+                    <i class="fa-solid fa-fingerprint"></i>
+                    <span id="stat-known-ids">0</span>
+                </div>
+                <div class="stat-mini" title="Database Cache (الطلبات المحفوظة)">
+                    <i class="fa-solid fa-database"></i>
+                    <span id="stat-all-posts">0</span>
+                </div>
+                <div class="stat-mini" title="Poll Cycles Run (دورات الفحص)">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span id="stat-poll-count">0</span>
+                </div>
+                <div class="stat-mini" title="Last Activity (آخر تحديث)">
+                    <i class="fa-solid fa-clock"></i>
+                    <span id="stat-last-poll" dir="ltr">--</span>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div id="connection-status" class="status-badge">
+                    <span class="pulsing-dot"></span>
+                    <span id="status-text">Connected</span>
+                </div>
             </div>
         </header>
-
-        <section class="stats-grid">
-            <div class="stat-card">
-                <span id="stat-known-ids" class="stat-value">0</span>
-                <span class="stat-label">Total IDs Spotted</span>
-            </div>
-            <div class="stat-card">
-                <span id="stat-all-posts" class="stat-value">0</span>
-                <span class="stat-label">Database Cache</span>
-            </div>
-            <div class="stat-card">
-                <span id="stat-poll-count" class="stat-value">0</span>
-                <span class="stat-label">Poll Cycles Run</span>
-            </div>
-            <div class="stat-card">
-                <span id="stat-last-poll" class="stat-value">--</span>
-                <span class="stat-label">Last Activity</span>
-            </div>
-        </section>
 
         <main>
             <!-- RECENT HISTORY (Full Width) -->
@@ -167,11 +172,20 @@
             const timeAgoText = timeAgoArabic(dateObj);
             const absoluteTime = dateObj.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
 
+            let contentHtml = '';
+            if (post.content) {
+                const truncatedContent = post.content.length > 200 
+                    ? post.content.substring(0, 200) + '...' 
+                    : post.content;
+                contentHtml = `<p class="post-preview-text text-dim" style="font-size: 0.9rem; margin-top: 0.5rem; line-height: 1.5;">${truncatedContent}</p>`;
+            }
+
             div.innerHTML = `
                 <div class="post-item-layout">
                     <img src="${avatar}" class="avatar-lg" alt="${buyerName}" loading="lazy">
                     <div class="post-content">
                         <a href="${postUrl}" target="_blank" class="post-title-link">${title}</a>
+                        ${contentHtml}
                         <div class="post-meta-details">
                             <span class="buyer-name-tag"><i class="fa-solid fa-user"></i> ${buyerName}</span>
                             <span class="time-ago tag-subtle" data-timestamp="${dateObj.toISOString()}">
