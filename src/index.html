@@ -72,6 +72,29 @@
         </main>
     </div>
 
+    <!-- Post Details Modal -->
+    <div id="post-modal" class="modal-overlay">
+        <div class="modal-container glass-effect">
+            <div class="modal-header">
+                <h3 id="modal-title" class="modal-title"></h3>
+                <button id="modal-close" class="modal-close-btn">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-meta">
+                <span id="modal-buyer" class="buyer-name-tag"><i class="fa-solid fa-user"></i></span>
+                <span id="modal-time" class="time-ago tag-subtle"><i class="fa-solid fa-clock"></i></span>
+                <span id="modal-id" class="id-tag"></span>
+                <a id="modal-link" href="#" target="_blank" class="external-link-btn" title="فتح في خمسات">
+                    <i class="fa-solid fa-external-link-alt"></i>
+                </a>
+            </div>
+            <div class="modal-body">
+                <p id="modal-content" class="modal-content"></p>
+            </div>
+        </div>
+    </div>
+
     <script>
         const API_BASE = ''; // Same host
         const PAGE_LIMIT = 7;
@@ -196,26 +219,12 @@
 
             const isoTime = (dateObj instanceof Date && !isNaN(dateObj)) ? dateObj.toISOString() : new Date().toISOString();
 
-            let previewHtml = '';
-            let detailsHtml = '';
-
             if (post.postDetails) {
-                const truncated = post.postDetails.length > 150
-                    ? post.postDetails.substring(0, 150) + '...'
-                    : post.postDetails;
-
-                previewHtml = `<p class="post-preview-text text-dim">${truncated}</p>`;
-                detailsHtml = `
-                    <div class="post-details-drawer">
-                        <div class="divider-subtle"></div>
-                        <p class="post-full-text">${post.postDetails}</p>
-                    </div>`;
-
                 div.classList.add('has-details');
                 div.onclick = (e) => {
-                    // Don't expand if user click on the external link icon
+                    // Don't open modal if user clicks the external link icon
                     if (e.target.closest('.external-link-btn')) return;
-                    div.classList.toggle('expanded');
+                    openModal(post, title, buyerName, timeAgoText, postUrl, isoTime);
                 };
             }
 
@@ -226,7 +235,6 @@
                         <div class="post-title-row">
                             <span class="post-title">${title}</span>
                         </div>
-                        ${previewHtml}
                         <div class="post-meta-details">
                             <span class="buyer-name-tag"><i class="fa-solid fa-user"></i> ${buyerName}</span>
                             <span class="time-ago tag-subtle" data-timestamp="${isoTime}">
@@ -234,7 +242,6 @@
                             </span>
                             <span class="absolute-time text-dim">(${absoluteTime})</span>
                         </div>
-                        ${detailsHtml}
                     </div>
                     <div class="post-action">
                         <div class="action-top">
@@ -243,7 +250,7 @@
                                 <i class="fa-solid fa-external-link-alt"></i>
                             </a>
                         </div>
-                        ${post.postDetails ? '<i class="fa-solid fa-chevron-down expand-icon"></i>' : ''}
+                        ${post.postDetails ? '<i class="fa-solid fa-expand expand-icon"></i>' : ''}
                     </div>
                 </div>
             `;
@@ -352,6 +359,41 @@
                 scrollArea.scrollTop = 0;
             }
         }, { passive: false });
+
+        // --- Modal Functions ---
+        const modal = document.getElementById('post-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBuyer = document.getElementById('modal-buyer');
+        const modalTime = document.getElementById('modal-time');
+        const modalId = document.getElementById('modal-id');
+        const modalLink = document.getElementById('modal-link');
+        const modalContent = document.getElementById('modal-content');
+        const modalClose = document.getElementById('modal-close');
+
+        function openModal(post, title, buyerName, timeAgoText, postUrl, isoTime) {
+            modalTitle.innerText = title || 'طلب بدون عنوان';
+            modalBuyer.innerHTML = `<i class="fa-solid fa-user"></i> ${buyerName}`;
+            modalTime.innerHTML = `<i class="fa-solid fa-clock"></i> ${timeAgoText}`;
+            modalId.innerText = `#${post.id || post.postId.replace('forum_post-', '')}`;
+            modalLink.href = postUrl;
+            modalContent.innerText = post.postDetails || 'لا يوجد تفاصيل';
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        modalClose.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
 
         // Initialize
         fetchStatus();
