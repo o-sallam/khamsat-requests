@@ -1,5 +1,7 @@
+<!-- src/index.html -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,16 +9,17 @@
     <link rel="stylesheet" href="index.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <div class="dashboard-container">
         <header class="main-header">
             <div class="header-left">
                 <h1><span class="pulsing-dot" style="background-color: var(--primary);"></span> Khamsat Monitor</h1>
             </div>
-            
+
             <div class="stats-compact-bar">
                 <div class="stat-mini" title="Total IDs Spotted (إجمالي المعرفات)">
                     <i class="fa-solid fa-fingerprint"></i>
@@ -76,13 +79,13 @@
         function getRealPostTime(post) {
             // Anchor to the exact moment our script saw it
             const anchorTime = post.detectedAt ? new Date(post.detectedAt) : new Date();
-            
+
             // Khamsat's GMT timestamp is often timezone-shifted incorrectly (in the future or past).
             // To get perfect sync with Khamsat, we parse their exact Arabic phrase from the HTML text 
             // ("منذ 13 دقيقة", "منذ ساعتين", "أقل من دقيقة") and subtract it from our safe anchor Time.
             let subtractMs = 0;
             const text = post.timing?.posted?.text || '';
-            
+
             if (text.includes('أقل من دقيقة') || text.includes('ثاني')) {
                 subtractMs = 5 * 1000; // ~5 seconds
             } else if (text.includes('دقيقة') || text.includes('دقائق')) {
@@ -97,11 +100,11 @@
                     const match = text.match(/(\d+)/);
                     if (match) mins = parseInt(match[1]) * 60;
                 }
-                
+
                 // Parse optional trailing minutes
                 const minMatch = text.match(/و ?(\d+) دقيقة/);
                 if (minMatch) mins += parseInt(minMatch[1]);
-                
+
                 subtractMs = mins * 60000;
             } else if (text.includes('يوم') || text.includes('أيام')) {
                 const match = text.match(/(\d+)/);
@@ -109,7 +112,7 @@
                 else if (text.includes('يومين')) subtractMs = 2 * 86400000;
                 else subtractMs = 86400000;
             }
-            
+
             // If the text parser completely fails, fallback to the anchor directly.
             return new Date(anchorTime.getTime() - subtractMs);
         }
@@ -152,7 +155,7 @@
         function createPostItem(post) {
             const div = document.createElement('div');
             div.className = 'post-item glass-effect';
-            
+
             // Mouse tracking for glassmorphism hover effect
             div.onmousemove = e => {
                 const rect = div.getBoundingClientRect();
@@ -161,41 +164,69 @@
                 div.style.setProperty('--mouse-x', `${x}px`);
                 div.style.setProperty('--mouse-y', `${y}px`);
             };
-            
+
             const dateObj = getRealPostTime(post);
 
             const avatar = post.requester?.avatar || post.buyer?.avatar || 'https://via.placeholder.com/48';
             const buyerName = post.requester?.name || post.buyer?.name || 'مستخدم غير معروف';
             const title = post.title || 'طلب بدون عنوان';
             const postUrl = post.postUrl && post.postUrl.startsWith('http') ? post.postUrl : `https://khamsat.com${post.postUrl}`;
-            
-            const timeAgoText = timeAgoArabic(dateObj);
-            const absoluteTime = dateObj.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
 
-            let contentHtml = '';
-            if (post.content) {
-                const truncatedContent = post.content.length > 200 
-                    ? post.content.substring(0, 200) + '...' 
-                    : post.content;
-                contentHtml = `<p class="post-preview-text text-dim" style="font-size: 0.9rem; margin-top: 0.5rem; line-height: 1.5;">${truncatedContent}</p>`;
+            const timeAgoText = (dateObj instanceof Date && !isNaN(dateObj)) ? timeAgoArabic(dateObj) : 'غير متوفر';
+            const absoluteTime = (dateObj instanceof Date && !isNaN(dateObj)) 
+                ? dateObj.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) 
+                : '--:--';
+
+            const isoTime = (dateObj instanceof Date && !isNaN(dateObj)) ? dateObj.toISOString() : new Date().toISOString();
+
+            let previewHtml = '';
+            let detailsHtml = '';
+
+            if (post.postDetails) {
+                const truncated = post.postDetails.length > 150 
+                    ? post.postDetails.substring(0, 150) + '...' 
+                    : post.postDetails;
+                
+                previewHtml = `<p class="post-preview-text text-dim">${truncated}</p>`;
+                detailsHtml = `
+                    <div class="post-details-drawer">
+                        <div class="divider-subtle"></div>
+                        <p class="post-full-text">${post.postDetails}</p>
+                    </div>`;
+                
+                div.classList.add('has-details');
+                div.onclick = (e) => {
+                    // Don't expand if user click on the external link icon
+                    if (e.target.closest('.external-link-btn')) return;
+                    div.classList.toggle('expanded');
+                };
             }
 
             div.innerHTML = `
                 <div class="post-item-layout">
                     <img src="${avatar}" class="avatar-lg" alt="${buyerName}" loading="lazy">
                     <div class="post-content">
-                        <a href="${postUrl}" target="_blank" class="post-title-link">${title}</a>
-                        ${contentHtml}
+                        <div class="post-title-row">
+                            <span class="post-title">${title}</span>
+                        </div>
+                        ${previewHtml}
                         <div class="post-meta-details">
                             <span class="buyer-name-tag"><i class="fa-solid fa-user"></i> ${buyerName}</span>
-                            <span class="time-ago tag-subtle" data-timestamp="${dateObj.toISOString()}">
+                            <span class="time-ago tag-subtle" data-timestamp="${isoTime}">
                                 <i class="fa-solid fa-clock"></i> ${timeAgoText}
                             </span>
                             <span class="absolute-time text-dim">(${absoluteTime})</span>
                         </div>
+                        ${detailsHtml}
                     </div>
                     <div class="post-action">
-                        <span class="id-tag">#${post.id || post.postId.replace('forum_post-','')}</span>
+                        <div class="action-top">
+                            <span class="id-tag">#${post.id || post.postId.replace('forum_post-', '')}</span>
+                            <a href="${postUrl}" target="_blank" class="external-link-btn" title="فتح في خمسات">
+                                <i class="fa-solid fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        ${post.postDetails ? '<i class="fa-solid fa-chevron-down expand-icon"></i>' : ''}
                     </div>
                 </div>
             `;
@@ -206,16 +237,16 @@
             try {
                 const res = await fetch(`${API_BASE}/status`);
                 const data = await res.json();
-                
+
                 elements.statKnownIds.innerText = data.knownIdsCount.toLocaleString();
                 elements.statAllPosts.innerText = data.allPostsCount.toLocaleString();
                 elements.statPollCount.innerText = data.pollCount.toLocaleString();
-                
+
                 if (data.lastPollAt) {
                     const time = new Date(data.lastPollAt).toLocaleTimeString();
                     elements.statLastPoll.innerText = time;
                 }
-                
+
                 updateStatus(true);
             } catch (err) {
                 updateStatus(false, 'Status Offline');
@@ -226,13 +257,13 @@
             try {
                 const res = await fetch(`${API_BASE}/posts/recent?limit=30`);
                 const data = await res.json();
-                
+
                 elements.recentFeed.innerHTML = '';
                 if (data.posts.length === 0) {
                     elements.recentFeed.innerHTML = '<div class="placeholder-msg">لا توجد طلبات بعد.</div>';
                     return;
                 }
-                
+
                 data.posts.forEach(post => {
                     elements.recentFeed.appendChild(createPostItem(post));
                 });
@@ -247,7 +278,7 @@
             try {
                 const res = await fetch(`${API_BASE}/posts/new`);
                 const data = await res.json();
-                
+
                 if (data.count > 0) {
                     // Remove placeholder if present
                     if (elements.recentFeed.querySelector('.placeholder-msg')) {
@@ -259,7 +290,7 @@
                         const item = createPostItem(post);
                         elements.recentFeed.prepend(item);
                     });
-                    
+
                     // Limit list size visually to prevent infinite DOM growth
                     while (elements.recentFeed.children.length > 50) {
                         elements.recentFeed.removeChild(elements.recentFeed.lastChild);
@@ -274,10 +305,11 @@
         // Initialize
         fetchStatus();
         fetchRecent();
-        
+
         // Polling intervals
         setInterval(fetchStatus, 5000);
         setInterval(pollNew, 5000); // Check for new items faster so UI updates as soon as server finds them
     </script>
 </body>
+
 </html>

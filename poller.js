@@ -3,6 +3,9 @@ const store = require('./store');
 
 const POLL_INTERVAL_MS = parseInt(process.env.POLL_INTERVAL_MS) || 300000;
 
+// Helper to add fake delay between requests
+const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+
 // In-memory state
 let knownIds = new Set();
 let allPosts = [];        // all posts ever seen
@@ -60,17 +63,23 @@ async function poll() {
     for (const post of fetchedPosts) {
       const idStr = String(post.id);
 
-      // If we don't have the full post object saved, it's new to us.
-      const hasFullPost = allPosts.some(p => String(p.id) === idStr);
-      if (!hasFullPost) {
+      // If we don't have the full post object OR it was saved as a stub, process it.
+      const existingIdx = allPosts.findIndex(p => String(p.id) === idStr);
+      const isNew = existingIdx === -1;
+      const isStub = !isNew && !allPosts[existingIdx].title;
+
+      if (isNew || isStub) {
         
+        // --- ADDED GAP: don't slam the server ---
+        await sleep(2000 + Math.random() * 2000);
+
         // Fetch article content immediately!
         try {
           console.log(`[poller] Probing new post ID ${idStr} for full content...`);
           const probeRes = await probeId(post.id);
-          if (probeRes.status === 'new' && probeRes.post?.content) {
-            post.content = probeRes.post.content;
-            console.log(`[poller] ✅ Acquired content for ID ${idStr}`);
+          if (probeRes.status === 'new' && probeRes.post?.postDetails) {
+            post.postDetails = probeRes.post.postDetails;
+            console.log(`[poller] ✅ Acquired details for ID ${idStr}`);
           }
         } catch (e) {
           console.error(`[poller] ⚠️ Failed to probe ID ${idStr}:`, e.message);
@@ -78,8 +87,38 @@ async function poll() {
 
         freshPosts.push(post);
         knownIds.add(idStr);
-        allPosts.push(post);
+        if (isNew) {
+          allPosts.push(post);
+        } else {
+          allPosts[existingIdx] = post;
+        }
         newPostsBuffer.push(post);
+      }
+    }
+
+    // --- PREDICTIVE PROBING: Check next IDs (+1, +2, +3) ---
+    const lastMaxId = getMaxId();
+    console.log(`[poller] Predictive probing starting from ID ${lastMaxId + 1}...`);
+    for (let nextId = lastMaxId + 1; nextId <= lastMaxId + 3; nextId++) {
+      const idStr = String(nextId);
+      if (knownIds.has(idStr)) continue;
+
+      // --- ADDED GAP: don't slam the server ---
+      await sleep(2500 + Math.random() * 2500);
+
+      try {
+        const res = await probeId(nextId);
+        if (res.status === 'new' && res.post) {
+          console.log(`[poller] 🎯 FOUND FUTURE POST ${nextId} via predictive probe!`);
+          
+          const post = res.post;
+          freshPosts.push(post);
+          knownIds.add(idStr);
+          allPosts.push(post);
+          newPostsBuffer.push(post);
+        }
+      } catch (e) {
+        console.error(`[poller] ⚠️ Predictive probe failed for ID ${nextId}:`, e.message);
       }
     }
 

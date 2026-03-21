@@ -1,5 +1,51 @@
 [
   {
+    "id": 784050,
+    "idString": "784050",
+    "postId": "forum_post-784050",
+    "index": 0,
+    "title": "مطلوب عمل قوائم مالية",
+    "postUrl": "/community/requests/784050-%D9%85%D8%B7%D9%84%D9%88%D8%A8-%D8%B9%D9%85%D9%84-%D9%82%D9%88%D8%A7%D8%A6%D9%85-%D9%85%D8%A7%D9%84%D9%8A%D8%A9",
+    "requester": {
+      "name": ".Mahmoud S",
+      "profileUrl": "/user/mahmoudsh100",
+      "avatar": "https://avatars.hsoubcdn.com/032520a0423b19df3a94cb6bb5509eb6?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ 4 دقائق",
+        "timestamp": "21/03/2026 06:11:13 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 4 دقائق"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-21T06:15:47.596Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784048,
+    "idString": "784048",
+    "postId": "forum_post-784048",
+    "index": 0,
+    "title": "عمل تقرير لمنصات تواصل التيك توك وانستغرام",
+    "postUrl": "/community/requests/784048-%D8%B9%D9%85%D9%84-%D8%AA%D9%82%D8%B1%D9%8A%D8%B1-%D9%84%D9%85%D9%86%D8%B5%D8%A7%D8%AA-%D8%AA%D9%88%D8%A7%D8%B5%D9%84-%D8%A7%D9%84%D8%AA%D9%8A%D9%83-%D8%AA%D9%88%D9%83-%D9%88%D8%A7%D9%86%D8%B3%D8%AA%D8%BA%D8%B1%D8%A7%D9%85",
+    "requester": {
+      "name": ".Dalal M",
+      "profileUrl": "/user/dalalmohda",
+      "avatar": "https://avatars.hsoubcdn.com/4889d535825fe793028598a781b0fc57?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ دقيقة",
+        "timestamp": "21/03/2026 05:47:53 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-21T05:49:18.032Z",
+    "discoveredVia": "ajax"
+  },
+  {
     "id": 784046,
     "idString": "784046",
     "postId": "forum_post-784046",
@@ -13,13 +59,13 @@
     },
     "timing": {
       "posted": {
-        "text": "منذ 20 دقيقة",
+        "text": "منذ 52 دقيقة",
         "timestamp": "21/03/2026 03:19:02 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ دقيقة"
+      "lastReplyMobile": "آخر تفاعل منذ 26 دقيقة"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.480Z",
+    "detectedAt": "2026-03-21T04:11:53.387Z",
     "discoveredVia": "ajax"
   },
   {
@@ -36,13 +82,13 @@
     },
     "timing": {
       "posted": {
-        "text": "منذ ساعتين و8 دقائق",
+        "text": "منذ ساعتين و40 دقيقة",
         "timestamp": "21/03/2026 01:31:03 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ 58 دقيقة"
+      "lastReplyMobile": "آخر تفاعل منذ ساعة و30 دقيقة"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.482Z",
+    "detectedAt": "2026-03-21T04:11:53.390Z",
     "discoveredVia": "ajax"
   },
   {
@@ -59,13 +105,13 @@
     },
     "timing": {
       "posted": {
-        "text": "منذ ساعتين و49 دقيقة",
+        "text": "منذ 3 ساعات و21 دقيقة",
         "timestamp": "21/03/2026 00:50:13 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ 58 دقيقة"
+      "lastReplyMobile": "آخر تفاعل منذ ساعة و30 دقيقة"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.483Z",
+    "detectedAt": "2026-03-21T04:11:53.390Z",
     "discoveredVia": "ajax"
   },
   {
@@ -82,13 +128,13 @@
     },
     "timing": {
       "posted": {
-        "text": "منذ 4 ساعات و7 دقائق",
+        "text": "منذ 4 ساعات و39 دقيقة",
         "timestamp": "20/03/2026 23:32:30 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ 17 دقيقة"
+      "lastReplyMobile": "آخر تفاعل منذ 49 دقيقة"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.481Z",
+    "detectedAt": "2026-03-21T04:11:53.388Z",
     "discoveredVia": "ajax"
   },
   {
@@ -105,13 +151,13 @@
     },
     "timing": {
       "posted": {
-        "text": "منذ 4 ساعات و25 دقيقة",
+        "text": "منذ 4 ساعات و57 دقيقة",
         "timestamp": "20/03/2026 23:14:04 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ ساعتين و58 دقيقة"
+      "lastReplyMobile": "آخر تفاعل منذ 3 ساعات و30 دقيقة"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.484Z",
+    "detectedAt": "2026-03-21T04:11:53.395Z",
     "discoveredVia": "ajax"
   },
   {
@@ -128,13 +174,36 @@
     },
     "timing": {
       "posted": {
-        "text": "منذ 7 ساعات و16 دقيقة",
+        "text": "منذ 7 ساعات و49 دقيقة",
         "timestamp": "20/03/2026 20:22:41 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ ساعتين و15 دقيقة"
+      "lastReplyMobile": "آخر تفاعل منذ ساعتين و48 دقيقة"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.483Z",
+    "detectedAt": "2026-03-21T04:11:53.392Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784034,
+    "idString": "784034",
+    "postId": "forum_post-784034",
+    "index": 0,
+    "title": "صورة مستعجلة جدا الليلة",
+    "postUrl": "/community/requests/784034-%D8%B5%D9%88%D8%B1%D8%A9-%D9%85%D8%B3%D8%AA%D8%B9%D8%AC%D9%84%D8%A9-%D8%AC%D8%AF%D8%A7-%D8%A7%D9%84%D9%84%D9%8A%D9%84%D8%A9",
+    "requester": {
+      "name": "يسري س.",
+      "profileUrl": "/user/mahmouuuud",
+      "avatar": "https://avatars.hsoubcdn.com/88500db3a8e0b18a69120b10b2ea4d38?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ 8 ساعات و26 دقيقة",
+        "timestamp": "20/03/2026 20:12:49 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 4 دقائق"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-21T04:38:50.982Z",
     "discoveredVia": "ajax"
   },
   {
@@ -151,13 +220,36 @@
     },
     "timing": {
       "posted": {
-        "text": "منذ 9 ساعات و21 دقيقة",
+        "text": "منذ 9 ساعات و53 دقيقة",
         "timestamp": "20/03/2026 18:18:07 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ 53 دقيقة"
+      "lastReplyMobile": "آخر تفاعل منذ 18 دقيقة"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.482Z",
+    "detectedAt": "2026-03-21T04:11:53.386Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784022,
+    "idString": "784022",
+    "postId": "forum_post-784022",
+    "index": 0,
+    "title": "مساعدة في تنسيق ملف ورد وتصميمه",
+    "postUrl": "/community/requests/784022-%D9%85%D8%B3%D8%A7%D8%B9%D8%AF%D8%A9-%D9%81%D9%8A-%D8%AA%D9%86%D8%B3%D9%8A%D9%82-%D9%85%D9%84%D9%81-%D9%88%D8%B1%D8%AF-%D9%88%D8%AA%D8%B5%D9%85%D9%8A%D9%85%D9%87",
+    "requester": {
+      "name": "تسنيم ا.",
+      "profileUrl": "/user/tasneem_amjad",
+      "avatar": "https://avatars.hsoubcdn.com/a9083b253a297e201dce6e7afd785823?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ 16 ساعة و31 دقيقة",
+        "timestamp": "20/03/2026 13:28:24 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 4 دقائق"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-21T05:59:52.458Z",
     "discoveredVia": "ajax"
   },
   {
@@ -174,13 +266,36 @@
     },
     "timing": {
       "posted": {
-        "text": "منذ 14 ساعة و11 دقيقة",
+        "text": "منذ 14 ساعة و43 دقيقة",
         "timestamp": "20/03/2026 13:27:56 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ ساعتين و37 دقيقة"
+      "lastReplyMobile": "آخر تفاعل منذ 3 ساعات و9 دقائق"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.484Z",
+    "detectedAt": "2026-03-21T04:11:53.395Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784015,
+    "idString": "784015",
+    "postId": "forum_post-784015",
+    "index": 0,
+    "title": "انشاء موقع الكتروني",
+    "postUrl": "/community/requests/784015-%D8%A7%D9%86%D8%B4%D8%A7%D8%A1-%D9%85%D9%88%D9%82%D8%B9-%D8%A7%D9%84%D9%83%D8%AA%D8%B1%D9%88%D9%86%D9%8A",
+    "requester": {
+      "name": "عبدالرحيم ع.",
+      "profileUrl": "/user/abdulrahim_abed",
+      "avatar": "https://avatars.hsoubcdn.com/cd029b481bc3f41ffacfa82c73cbf2c3?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ 18 ساعة و49 دقيقة",
+        "timestamp": "20/03/2026 11:15:57 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 3 دقائق"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-21T06:05:32.245Z",
     "discoveredVia": "ajax"
   },
   {
@@ -197,13 +312,36 @@
     },
     "timing": {
       "posted": {
-        "text": "منذ 18 ساعة و11 دقيقة",
+        "text": "منذ 18 ساعة و44 دقيقة",
         "timestamp": "20/03/2026 09:27:47 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ ساعة و39 دقيقة"
+      "lastReplyMobile": "آخر تفاعل منذ ساعتين و11 دقيقة"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.483Z",
+    "detectedAt": "2026-03-21T04:11:53.391Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784011,
+    "idString": "784011",
+    "postId": "forum_post-784011",
+    "index": 0,
+    "title": "ربط متجر سلة بمزود خدمات خارجي",
+    "postUrl": "/community/requests/784011-%D8%B1%D8%A8%D8%B7-%D9%85%D8%AA%D8%AC%D8%B1-%D8%B3%D9%84%D8%A9-%D8%A8%D9%85%D8%B2%D9%88%D8%AF-%D8%AE%D8%AF%D9%85%D8%A7%D8%AA-%D8%AE%D8%A7%D8%B1%D8%AC%D9%8A",
+    "requester": {
+      "name": "محمد جاد ا.",
+      "profileUrl": "/user/mohammad_alwadi",
+      "avatar": "https://avatars.hsoubcdn.com/9dc870f15603a2e283942707f01999f4?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ 21 ساعة و16 دقيقة",
+        "timestamp": "20/03/2026 08:43:00 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل أقل من دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-21T05:59:52.456Z",
     "discoveredVia": "ajax"
   },
   {
@@ -220,13 +358,13 @@
     },
     "timing": {
       "posted": {
-        "text": "منذ 19 ساعة ودقيقتين",
+        "text": "منذ 19 ساعة و35 دقيقة",
         "timestamp": "20/03/2026 08:36:37 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ 26 دقيقة"
+      "lastReplyMobile": "آخر تفاعل منذ 58 دقيقة"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.481Z",
+    "detectedAt": "2026-03-21T04:11:53.389Z",
     "discoveredVia": "ajax"
   },
   {
@@ -243,13 +381,59 @@
     },
     "timing": {
       "posted": {
-        "text": "منذ يوم وساعة",
+        "text": "منذ يوم وساعتين",
         "timestamp": "20/03/2026 01:58:49 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ ساعتين و36 دقيقة"
+      "lastReplyMobile": "آخر تفاعل منذ 3 ساعات و8 دقائق"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.484Z",
+    "detectedAt": "2026-03-21T04:11:53.393Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 783995,
+    "idString": "783995",
+    "postId": "forum_post-783995",
+    "index": 0,
+    "title": "احتاج موشن قرفيك بالصوت مدة 10 ثواني",
+    "postUrl": "/community/requests/783995-%D8%A7%D8%AD%D8%AA%D8%A7%D8%AC-%D9%85%D9%88%D8%B4%D9%86-%D9%82%D8%B1%D9%81%D9%8A%D9%83-%D8%A8%D8%A7%D9%84%D8%B5%D9%88%D8%AA-%D9%85%D8%AF%D8%A9-10-%D8%AB%D9%88%D8%A7%D9%86%D9%8A",
+    "requester": {
+      "name": "عياد عالي ا.",
+      "profileUrl": "/user/ayyad900",
+      "avatar": "https://avatars.hsoubcdn.com/e19a9b8b06d71549c6f9803cb543aa11?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ يوم و7 ساعات",
+        "timestamp": "19/03/2026 22:06:13 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل أقل من دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-21T05:54:33.301Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 783986,
+    "idString": "783986",
+    "postId": "forum_post-783986",
+    "index": 0,
+    "title": "احتاج شخص احترافي n8n",
+    "postUrl": "/community/requests/783986-%D8%A7%D8%AD%D8%AA%D8%A7%D8%AC-%D8%B4%D8%AE%D8%B5-%D8%A7%D8%AD%D8%AA%D8%B1%D8%A7%D9%81%D9%8A-n8n",
+    "requester": {
+      "name": ".Alaa S",
+      "profileUrl": "/user/jwan111",
+      "avatar": "https://avatars.hsoubcdn.com/4571c02cd8f2d5ae531c3e9733e4d9b2?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ يوم و12 ساعة",
+        "timestamp": "19/03/2026 16:46:00 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 8 دقائق"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-21T04:49:06.172Z",
     "discoveredVia": "ajax"
   },
   {
@@ -269,10 +453,10 @@
         "text": "منذ يوم و12 ساعة",
         "timestamp": "19/03/2026 15:30:19 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ 4 ساعات و13 دقيقة"
+      "lastReplyMobile": "آخر تفاعل منذ 4 ساعات و46 دقيقة"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.486Z",
+    "detectedAt": "2026-03-21T04:11:53.396Z",
     "discoveredVia": "ajax"
   },
   {
@@ -292,10 +476,56 @@
         "text": "منذ يوم و14 ساعة",
         "timestamp": "19/03/2026 13:21:14 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ ساعتين و7 دقائق"
+      "lastReplyMobile": "آخر تفاعل منذ ساعتين و39 دقيقة"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.483Z",
+    "detectedAt": "2026-03-21T04:11:53.392Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 783973,
+    "idString": "783973",
+    "postId": "forum_post-783973",
+    "index": 0,
+    "title": "مطلوب مصمم متمكن جاهز للعمل فورا خلال ساعة",
+    "postUrl": "/community/requests/783973-%D9%85%D8%B7%D9%84%D9%88%D8%A8-%D9%85%D8%B5%D9%85%D9%85-%D9%85%D8%AA%D9%85%D9%83%D9%86-%D8%AC%D8%A7%D9%87%D8%B2-%D9%84%D9%84%D8%B9%D9%85%D9%84-%D9%81%D9%88%D8%B1%D8%A7-%D8%AE%D9%84%D8%A7%D9%84-%D8%B3%D8%A7%D8%B9%D8%A9",
+    "requester": {
+      "name": ".Faris H",
+      "profileUrl": "/user/faris-hamarshi",
+      "avatar": "https://avatars.hsoubcdn.com/0021a8b8dcd54d834078e96ecce1ad4d?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ يوم و16 ساعة",
+        "timestamp": "19/03/2026 12:12:22 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل أقل من دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-21T04:38:50.980Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 783969,
+    "idString": "783969",
+    "postId": "forum_post-783969",
+    "index": 0,
+    "title": "أحتاج حد يعمل لي موقع إلكتروني لبراند هوديز",
+    "postUrl": "/community/requests/783969-%D8%A3%D8%AD%D8%AA%D8%A7%D8%AC-%D8%AD%D8%AF-%D9%8A%D8%B9%D9%85%D9%84-%D9%84%D9%8A-%D9%85%D9%88%D9%82%D8%B9-%D8%A5%D9%84%D9%83%D8%AA%D8%B1%D9%88%D9%86%D9%8A-%D9%84%D8%A8%D8%B1%D8%A7%D9%86%D8%AF-%D9%87%D9%88%D8%AF%D9%8A%D8%B2",
+    "requester": {
+      "name": "خالد م.",
+      "profileUrl": "/user/khaled_m_o_hamed",
+      "avatar": "https://avatars.hsoubcdn.com/2b1f72a9c533015c064f40e0b43d7b08?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ يوم و18 ساعة",
+        "timestamp": "19/03/2026 11:23:23 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل أقل من دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-21T06:00:14.920Z",
     "discoveredVia": "ajax"
   },
   {
@@ -315,10 +545,10 @@
         "text": "منذ يوم و17 ساعة",
         "timestamp": "19/03/2026 10:21:48 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ 3 ساعات و46 دقيقة"
+      "lastReplyMobile": "آخر تفاعل منذ 4 ساعات و18 دقيقة"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.485Z",
+    "detectedAt": "2026-03-21T04:11:53.396Z",
     "discoveredVia": "ajax"
   },
   {
@@ -338,10 +568,33 @@
         "text": "منذ يوم و18 ساعة",
         "timestamp": "19/03/2026 09:18:32 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ 27 دقيقة"
+      "lastReplyMobile": "آخر تفاعل منذ ساعة"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.481Z",
+    "detectedAt": "2026-03-21T04:11:53.389Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 783959,
+    "idString": "783959",
+    "postId": "forum_post-783959",
+    "index": 0,
+    "title": "تصميم PowerPoint بشكل احترافي",
+    "postUrl": "/community/requests/783959-%D8%AA%D8%B5%D9%85%D9%8A%D9%85-powerpoint-%D8%A8%D8%B4%D9%83%D9%84-%D8%A7%D8%AD%D8%AA%D8%B1%D8%A7%D9%81%D9%8A",
+    "requester": {
+      "name": ".Yousef M",
+      "profileUrl": "/user/yousef_mosad",
+      "avatar": "https://avatars.hsoubcdn.com/9e2a2c4b39bcf174b0d4a751fed61e69?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ يومين و3 ساعات",
+        "timestamp": "19/03/2026 02:09:34 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 3 دقائق"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-21T05:59:52.457Z",
     "discoveredVia": "ajax"
   },
   {
@@ -358,13 +611,13 @@
     },
     "timing": {
       "posted": {
-        "text": "منذ يومين و4 ساعات",
+        "text": "منذ يومين و5 ساعات",
         "timestamp": "18/03/2026 22:53:19 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ ساعة و56 دقيقة"
+      "lastReplyMobile": "آخر تفاعل منذ ساعتين و28 دقيقة"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.483Z",
+    "detectedAt": "2026-03-21T04:11:53.391Z",
     "discoveredVia": "ajax"
   },
   {
@@ -384,10 +637,10 @@
         "text": "منذ يومين و12 ساعة",
         "timestamp": "18/03/2026 15:34:27 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ 26 دقيقة"
+      "lastReplyMobile": "آخر تفاعل منذ 58 دقيقة"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.481Z",
+    "detectedAt": "2026-03-21T04:11:53.388Z",
     "discoveredVia": "ajax"
   },
   {
@@ -404,13 +657,13 @@
     },
     "timing": {
       "posted": {
-        "text": "منذ يومين و15 ساعة",
+        "text": "منذ يومين و16 ساعة",
         "timestamp": "18/03/2026 12:08:49 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ 3 ساعات و23 دقيقة"
+      "lastReplyMobile": "آخر تفاعل منذ 3 ساعات و56 دقيقة"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.484Z",
+    "detectedAt": "2026-03-21T04:11:53.395Z",
     "discoveredVia": "ajax"
   },
   {
@@ -430,10 +683,10 @@
         "text": "منذ 3 أيام و7 ساعات",
         "timestamp": "17/03/2026 20:17:18 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ 14 دقيقة"
+      "lastReplyMobile": "آخر تفاعل منذ 46 دقيقة"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.480Z",
+    "detectedAt": "2026-03-21T04:11:53.387Z",
     "discoveredVia": "ajax"
   },
   {
@@ -450,36 +703,13 @@
     },
     "timing": {
       "posted": {
-        "text": "منذ 3 أيام و8 ساعات",
+        "text": "منذ 3 أيام و9 ساعات",
         "timestamp": "17/03/2026 18:49:45 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ 3 ساعات و37 دقيقة"
+      "lastReplyMobile": "آخر تفاعل منذ 4 ساعات و10 دقائق"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.484Z",
-    "discoveredVia": "ajax"
-  },
-  {
-    "id": 783867,
-    "idString": "783867",
-    "postId": "forum_post-783867",
-    "index": 0,
-    "title": "مطلوب مبرمج",
-    "postUrl": "/community/requests/783867-%D9%85%D8%B7%D9%84%D9%88%D8%A8-%D9%85%D8%A8%D8%B1%D9%85%D8%AC",
-    "requester": {
-      "name": "معاذ ب.",
-      "profileUrl": "/user/youssefbn",
-      "avatar": "https://avatars.hsoubcdn.com/6a888a4d948ac74bb514ff2dccfc9fee?s=128"
-    },
-    "timing": {
-      "posted": {
-        "text": "منذ 3 أيام و13 ساعة",
-        "timestamp": "17/03/2026 14:18:55 GMT"
-      },
-      "lastReplyMobile": "آخر تفاعل منذ 4 ساعات و15 دقيقة"
-    },
-    "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.487Z",
+    "detectedAt": "2026-03-21T04:11:53.395Z",
     "discoveredVia": "ajax"
   },
   {
@@ -496,13 +726,13 @@
     },
     "timing": {
       "posted": {
-        "text": "منذ 6 أيام و14 ساعة",
+        "text": "منذ 6 أيام و15 ساعة",
         "timestamp": "14/03/2026 12:49:48 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ 29 دقيقة"
+      "lastReplyMobile": "آخر تفاعل منذ ساعة ودقيقة"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.482Z",
+    "detectedAt": "2026-03-21T04:11:53.390Z",
     "discoveredVia": "ajax"
   },
   {
@@ -522,10 +752,10 @@
         "text": "منذ 9 أيام و19 ساعة",
         "timestamp": "11/03/2026 08:28:09 GMT"
       },
-      "lastReplyMobile": "آخر تفاعل منذ 3 ساعات و45 دقيقة"
+      "lastReplyMobile": "آخر تفاعل منذ 4 ساعات و18 دقيقة"
     },
     "lastReplier": null,
-    "detectedAt": "2026-03-21T03:39:33.485Z",
+    "detectedAt": "2026-03-21T04:11:53.396Z",
     "discoveredVia": "ajax"
   }
 ]

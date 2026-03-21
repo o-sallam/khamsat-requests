@@ -1,3 +1,4 @@
+//probe.js
 const { execFile } = require('child_process');
 const { parse } = require('node-html-parser');
 
@@ -110,8 +111,10 @@ async function probeId(id) {
       const body = stdout.slice(0, stdout.lastIndexOf('\n__STATUS__'));
 
       // Redirected away from the expected URL → post doesn't exist
-      if (!finalUrl.includes(`/community/requests/${id}`)) {
-        console.log(`[probe] ID ${id} → redirected (not found)`);
+      // Strict check: the final URL should contain the exact numeric ID.
+      const urlIdPattern = new RegExp(`\\/${id}\\D?`);
+      if (!urlIdPattern.test(finalUrl)) {
+        console.log(`[probe] ID ${id} → redirected to non-id page (not found)`);
         return resolve({ status: 'not_found' });
       }
 
@@ -120,35 +123,17 @@ async function probeId(id) {
         return resolve({ status: 'not_found' });
       }
 
-      // Check for Arabic 404 page
-      if (body.includes('غير موجودة') || body.includes('404')) {
-        console.log(`[probe] ID ${id} → 404 page content`);
+      // Check for Arabic 404 page content
+      if (body.includes('الصفحة المطلوبة غير موجودة') || body.includes('لا يوجد موضوع بهذا الرقم')) {
+        console.log(`[probe] ID ${id} → 404 page text found`);
         return resolve({ status: 'not_found' });
       }
 
       // Parse the page
       const post = parsePostPage(body, id, url);
-      if (!post) {
-        // Might be a JS-challenge page — we know the ID exists, create a stub
-        if (httpStatus === 202 || body.length < 500) {
-          console.log(`[probe] ID ${id} → JS-gated, creating stub`);
-          return resolve({
-            status: 'new',
-            post: {
-              id: Number(id),
-              idString: String(id),
-              postId: `forum_post-${id}`,
-              index: 0,
-              title: null,
-              postUrl: `/community/requests/${id}`,
-              requester: { name: null, profileUrl: null, avatar: null },
-              timing: { posted: { text: '', timestamp: '' }, lastReplyMobile: '' },
-              lastReplier: null,
-              detectedAt: new Date().toISOString(),
-              discoveredVia: 'probe-stub',
-            }
-          });
-        }
+      if (!post || !post.title) {
+        // Stop phantom IDs from being added to the database.
+        // If we can't see the title, we don't know for sure it's a real post.
         return resolve({ status: 'not_found' });
       }
 
@@ -173,17 +158,32 @@ function parsePostPage(html, id, url) {
   if (!title) return null;
 
   const articleEl = root.querySelector('article.replace_urls');
-  
+
   let content = null;
   if (articleEl) {
     let rawHtml = articleEl.innerHTML;
-    // Replace <br> and <p> with spaces to avoid merging words
-    rawHtml = rawHtml.replace(/<(br|p|div)\s*\/?>/gi, ' ');
-    // Strip all HTML tags
+    // Replace <br> with newlines, and <p>/<div> with newlines to preserve structure
+    rawHtml = rawHtml.replace(/<br\s*\/?>/gi, '\n');
+    rawHtml = rawHtml.replace(/<\/(p|div)>/gi, '\n');
+    rawHtml = rawHtml.replace(/<(p|div)[^>]*>/gi, '');
+    
+    // Strip remaining HTML tags
     rawHtml = rawHtml.replace(/<[^>]+>/g, '');
-    // Replace html entities (basic ones)
-    rawHtml = rawHtml.replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-    content = rawHtml.replace(/\s+/g, ' ').trim();
+    
+    // Decode HTML entities (extended)
+    rawHtml = rawHtml.replace(/&quot;/g, '"')
+                     .replace(/&amp;/g, '&')
+                     .replace(/&lt;/g, '<')
+                     .replace(/&gt;/g, '>')
+                     .replace(/&#39;/g, "'")
+                     .replace(/&nbsp;/g, ' ');
+
+    // Normalize whitespace but keep newlines
+    content = rawHtml.split('\n')
+                     .map(line => line.trim())
+                     .filter(line => line.length > 0 || line === '') // keep intentional breaks
+                     .join('\n')
+                     .trim();
   }
 
   const requesterLink = root.querySelector('.details-list a.user, a.user');
@@ -199,11 +199,11 @@ function parsePostPage(html, id, url) {
   let timeStr = '';
   const timeSpans = root.querySelectorAll('span[title]');
   for (const span of timeSpans) {
-      if (span.getAttribute('title')?.includes('GMT')) {
-          timeText = span.text.trim();
-          timeStr = span.getAttribute('title');
-          break;
-      }
+    if (span.getAttribute('title')?.includes('GMT')) {
+      timeText = span.text.trim();
+      timeStr = span.getAttribute('title');
+      break;
+    }
   }
 
   const timing = {
@@ -220,7 +220,7 @@ function parsePostPage(html, id, url) {
     postId: `forum_post-${id}`,
     index: 0,
     title,
-    content, // The newly added content
+    postDetails: content, // The newly added content
     postUrl: `/community/requests/${id}`,
     requester,
     timing,
