@@ -80,20 +80,20 @@ async function fetchLatestPosts(knownIds = []) {
 
 /**
  * Direct ID probe via curl: fetch a single post page and check if it's valid.
- *
- * Returns one of:
- *   { status: 'new',       post: {...} }
- *   { status: 'not_found'             }
- *   { status: 'error',     error: msg }
+ * Can take an optional overrideUrl (the specific slug from the AJAX feed).
  */
-async function probeId(id) {
-  const url = `https://khamsat.com/community/requests/${id}`;
+async function probeId(id, overrideUrl = null) {
+  const url = overrideUrl 
+    ? (overrideUrl.startsWith('http') ? overrideUrl : `https://khamsat.com${overrideUrl}`)
+    : `https://khamsat.com/community/requests/${id}`;
+
   const args = [
     '-s',
     '--max-time', '15',
     '-L',   // follow redirects
-    '-H', 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-    '-H', 'Accept: text/html',
+    '-H', 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    '-H', 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+    '-H', 'Accept-Language: ar,en-US;q=0.9,en;q=0.8',
     '-w', '\n__STATUS__%{http_code}__FINALURL__%{url_effective}',
     url
   ];

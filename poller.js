@@ -75,8 +75,9 @@ async function poll() {
 
         // Fetch article content immediately!
         try {
-          console.log(`[poller] Probing new post ID ${idStr} for full content...`);
-          const probeRes = await probeId(post.id);
+          console.log(`[poller] Probing new post ID ${idStr} with custom URL...`);
+          // Pass the postUrl explicitly if coming from AJAX
+          const probeRes = await probeId(post.id, post.postUrl);
           if (probeRes.status === 'new' && probeRes.post?.postDetails) {
             post.postDetails = probeRes.post.postDetails;
             console.log(`[poller] ✅ Acquired details for ID ${idStr}`);
@@ -93,6 +94,10 @@ async function poll() {
           allPosts[existingIdx] = post;
         }
         newPostsBuffer.push(post);
+
+        // --- ATOMIC SAVE: ensure data is written to disk immediately ---
+        store.saveKnownIds(knownIds);
+        store.saveKnownPosts(allPosts);
       }
     }
 
@@ -116,6 +121,10 @@ async function poll() {
           knownIds.add(idStr);
           allPosts.push(post);
           newPostsBuffer.push(post);
+
+          // Save immediately
+          store.saveKnownIds(knownIds);
+          store.saveKnownPosts(allPosts);
         }
       } catch (e) {
         console.error(`[poller] ⚠️ Predictive probe failed for ID ${nextId}:`, e.message);
@@ -123,9 +132,7 @@ async function poll() {
     }
 
     if (freshPosts.length > 0) {
-      store.saveKnownIds(knownIds);
-      store.saveKnownPosts(allPosts);
-      console.log(`[poller] Poll #${pollCount} — ✅ ${freshPosts.length} NEW post(s) saved. IDs: ${freshPosts.map(p => p.id).join(', ')}`);
+      console.log(`[poller] Poll #${pollCount} — finished cycle with ${freshPosts.length} new/updated entries.`);
     } else {
       console.log(`[poller] Poll #${pollCount} — no new posts.`);
     }
