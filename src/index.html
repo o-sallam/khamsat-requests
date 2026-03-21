@@ -9,7 +9,8 @@
     <link rel="stylesheet" href="index.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -49,13 +50,7 @@
 
         <main>
             <!-- RECENT HISTORY (Full Width) -->
-            <section class="section-card full-width">
-                <div class="section-header">
-                    <div class="header-title">
-                        <h2>أحدث الطلبات (Recent Requests)</h2>
-                        <span class="tag pulse-bg">Live Updates</span>
-                    </div>
-                </div>
+            <section>
                 <div id="recent-feed" class="scroll-area fancy-scrollbar">
                     <div class="placeholder-msg">جاري تحميل الطلبات...</div>
                 </div>
@@ -173,8 +168,8 @@
             const postUrl = post.postUrl && post.postUrl.startsWith('http') ? post.postUrl : `https://khamsat.com${post.postUrl}`;
 
             const timeAgoText = (dateObj instanceof Date && !isNaN(dateObj)) ? timeAgoArabic(dateObj) : 'غير متوفر';
-            const absoluteTime = (dateObj instanceof Date && !isNaN(dateObj)) 
-                ? dateObj.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) 
+            const absoluteTime = (dateObj instanceof Date && !isNaN(dateObj))
+                ? dateObj.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
                 : '--:--';
 
             const isoTime = (dateObj instanceof Date && !isNaN(dateObj)) ? dateObj.toISOString() : new Date().toISOString();
@@ -183,17 +178,17 @@
             let detailsHtml = '';
 
             if (post.postDetails) {
-                const truncated = post.postDetails.length > 150 
-                    ? post.postDetails.substring(0, 150) + '...' 
+                const truncated = post.postDetails.length > 150
+                    ? post.postDetails.substring(0, 150) + '...'
                     : post.postDetails;
-                
+
                 previewHtml = `<p class="post-preview-text text-dim">${truncated}</p>`;
                 detailsHtml = `
                     <div class="post-details-drawer">
                         <div class="divider-subtle"></div>
                         <p class="post-full-text">${post.postDetails}</p>
                     </div>`;
-                
+
                 div.classList.add('has-details');
                 div.onclick = (e) => {
                     // Don't expand if user click on the external link icon
