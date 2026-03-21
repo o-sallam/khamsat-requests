@@ -82,6 +82,7 @@ body {
 }
 
 .stat-mini {
+  position: relative; /* For tooltip anchoring */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -93,6 +94,50 @@ body {
   font-size: 0.9rem;
   cursor: help;
   transition: all 0.2s;
+}
+
+/* CUSTOM TOOLTIP */
+.stat-mini::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 15px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-10px);
+  background: rgba(15, 23, 42, 0.95);
+  color: white;
+  padding: 0.5rem 0.85rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+  z-index: 5000;
+}
+
+/* Tooltip Arrow */
+.stat-mini::before {
+  content: '';
+  position: absolute;
+  left: calc(100% + 5px);
+  top: 50%;
+  transform: translateY(-50%);
+  border: 5px solid transparent;
+  border-right-color: rgba(15, 23, 42, 0.95);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.stat-mini:hover::after {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+.stat-mini:hover::before {
+  opacity: 1;
 }
 
 .stat-mini:hover {
