@@ -38,6 +38,20 @@
                     <i class="fa-solid fa-clock"></i>
                     <span id="stat-last-poll" dir="ltr">--</span>
                 </div>
+                <div class="divider-subtle"></div>
+                <div class="pagination-controls">
+                    <button id="prev-page" class="page-btn" title="الصفحة السابقة">
+                        <i class="fa-solid fa-chevron-up"></i>
+                    </button>
+                    <div class="page-info">
+                        <span id="current-page">1</span>
+                        <span class="page-separator">/</span>
+                        <span id="total-pages">1</span>
+                    </div>
+                    <button id="next-page" class="page-btn" title="الصفحة التالية">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                </div>
             </div>
 
             <div class="header-right">
@@ -60,6 +74,10 @@
 
     <script>
         const API_BASE = ''; // Same host
+        const PAGE_LIMIT = 7;
+        let currentPage = 1;
+        let totalPages = 1;
+        
         const elements = {
             statusBadge: document.getElementById('connection-status'),
             statusText: document.getElementById('status-text'),
@@ -68,6 +86,10 @@
             statPollCount: document.getElementById('stat-poll-count'),
             statLastPoll: document.getElementById('stat-last-poll'),
             recentFeed: document.getElementById('recent-feed'),
+            currentPageEl: document.getElementById('current-page'),
+            totalPagesEl: document.getElementById('total-pages'),
+            prevPageBtn: document.getElementById('prev-page'),
+            nextPageBtn: document.getElementById('next-page'),
         };
 
         // --- Time Parsing & Formatting ---
@@ -267,43 +289,76 @@
             }
         }
 
-        // Since we dropped the live feed block, we can just continuously refresh the recent feed smoothly.
-        // Or optimally, fetch `/posts/new` and prepend them to recent feed to avoid full re-renders.
-        async function pollNew() {
+        async function fetchPage(page) {
             try {
-                const res = await fetch(`${API_BASE}/posts/new`);
+                const res = await fetch(`${API_BASE}/posts/all?page=${page}&limit=${PAGE_LIMIT}`);
                 const data = await res.json();
 
-                if (data.count > 0) {
-                    // Remove placeholder if present
-                    if (elements.recentFeed.querySelector('.placeholder-msg')) {
-                        elements.recentFeed.innerHTML = '';
-                    }
+                currentPage = data.page;
+                totalPages = data.totalPages;
 
-                    // Prepend new posts
-                    data.posts.forEach(post => {
-                        const item = createPostItem(post);
-                        elements.recentFeed.prepend(item);
-                    });
+                elements.currentPageEl.innerText = currentPage;
+                elements.totalPagesEl.innerText = totalPages;
 
-                    // Limit list size visually to prevent infinite DOM growth
-                    while (elements.recentFeed.children.length > 50) {
-                        elements.recentFeed.removeChild(elements.recentFeed.lastChild);
-                    }
+                // Update button states
+                elements.prevPageBtn.disabled = currentPage <= 1;
+                elements.nextPageBtn.disabled = currentPage >= totalPages;
+
+                elements.recentFeed.innerHTML = '';
+                if (data.posts.length === 0) {
+                    elements.recentFeed.innerHTML = '<div class="placeholder-msg">لا توجد طلبات بعد.</div>';
+                    return;
                 }
+
+                data.posts.forEach(post => {
+                    elements.recentFeed.appendChild(createPostItem(post));
+                });
+
                 updateStatus(true);
             } catch (err) {
-                updateStatus(false, 'Live Check Failed');
+                console.error('Failed to fetch page', err);
+                updateStatus(false, 'Fetch Failed');
             }
         }
 
+        // Pagination controls
+        elements.prevPageBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                fetchPage(currentPage - 1);
+            }
+        });
+
+        elements.nextPageBtn.addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                fetchPage(currentPage + 1);
+            }
+        });
+
+        // Scroll-based pagination
+        const scrollArea = document.querySelector('.scroll-area');
+        scrollArea.addEventListener('wheel', (e) => {
+            const atTop = scrollArea.scrollTop === 0;
+            const atBottom = scrollArea.scrollTop + scrollArea.clientHeight >= scrollArea.scrollHeight - 10;
+
+            if (e.deltaY < 0 && atTop && currentPage > 1) {
+                // Scrolling up at top - go to previous page
+                e.preventDefault();
+                fetchPage(currentPage - 1);
+                scrollArea.scrollTop = scrollArea.scrollHeight;
+            } else if (e.deltaY > 0 && atBottom && currentPage < totalPages) {
+                // Scrolling down at bottom - go to next page
+                e.preventDefault();
+                fetchPage(currentPage + 1);
+                scrollArea.scrollTop = 0;
+            }
+        }, { passive: false });
+
         // Initialize
         fetchStatus();
-        fetchRecent();
+        fetchPage(1);
 
-        // Polling intervals
+        // Polling interval for status
         setInterval(fetchStatus, 5000);
-        setInterval(pollNew, 5000); // Check for new items faster so UI updates as soon as server finds them
     </script>
 </body>
 

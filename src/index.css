@@ -157,6 +157,62 @@ body {
   color: var(--primary);
 }
 
+/* Pagination Controls */
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+}
+
+.page-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.page-btn:hover:not(:disabled) {
+  background: rgba(242, 101, 34, 0.2);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.page-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.page-info {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--accent);
+}
+
+.page-separator {
+  color: var(--text-dim);
+  margin: 0 0.25rem;
+}
+
+#current-page {
+  color: var(--primary);
+}
+
+#total-pages {
+  color: var(--text-dim);
+}
+
 .header-right {
   margin-top: auto;
   width: 100%;
@@ -307,7 +363,7 @@ main {
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 1rem;
   padding: 1.25rem;
-  margin-bottom: 1rem;
+  margin-bottom: .5rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
@@ -371,6 +427,10 @@ main {
   height: 1px;
   background: linear-gradient(to left, transparent, rgba(242, 101, 34, 0.2), transparent);
   margin: 0.75rem 0;
+}
+
+.stats-compact-bar .divider-subtle {
+  margin: 0.5rem 0;
 }
 
 .post-full-text {

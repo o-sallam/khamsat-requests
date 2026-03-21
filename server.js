@@ -52,20 +52,23 @@ app.get('/posts/new', (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 // GET /posts/all
 // Returns every post we have ever seen (from disk + current session).
-// Supports optional ?limit=N&offset=M for pagination.
+// Supports pagination via ?page=N&limit=M (default limit=7)
 // ─────────────────────────────────────────────────────────────────────────────
 app.get('/posts/all', (req, res) => {
   const all = poller.getAllPosts();
-  const limit = parseInt(req.query.limit) || all.length;
-  const offset = parseInt(req.query.offset) || 0;
-  const page = all.slice(offset, offset + limit);
+  const limit = parseInt(req.query.limit) || 7;
+  const page = parseInt(req.query.page) || 1;
+  const totalPages = Math.ceil(all.length / limit);
+  const offset = (page - 1) * limit;
+  const posts = all.slice(offset, offset + limit);
 
   res.json({
     total: all.length,
-    offset,
+    page,
     limit,
-    count: page.length,
-    posts: page,
+    totalPages,
+    count: posts.length,
+    posts,
   });
 });
 
