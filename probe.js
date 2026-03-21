@@ -400,4 +400,25 @@ function parsePostsHtml(html) {
   return posts;
 }
 
-module.exports = { fetchLatestPosts, probeId, probeUserProfile, parsePostsHtml, closeBrowser };
+/**
+ * Submit a comment reply to a post.
+ * @param {number} postId
+ * @param {string} content
+ * @param {string} token    - CSRF/Session token for Khamsat
+ * @param {number} lastId   - Optional, last comment ID for sync
+ * @returns {Promise<Object>} - Parsed JSON response from Khamsat
+ */
+async function submitComment(postId, content, token, lastId = 0) {
+  const url = `https://khamsat.com/community/requests/${postId}/comment`;
+  const data = `content=${encodeURIComponent(content)}&token=${encodeURIComponent(token)}&confirm=0&last_id=${lastId}`;
+  
+  try {
+    const raw = await curlPost(url, data);
+    return JSON.parse(raw);
+  } catch (err) {
+    console.error(`[comment] Failed for ID ${postId}: ${err.message}`);
+    throw err;
+  }
+}
+
+module.exports = { fetchLatestPosts, probeId, probeUserProfile, parsePostsHtml, submitComment, closeBrowser };

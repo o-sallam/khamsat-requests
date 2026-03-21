@@ -59,6 +59,14 @@
                     <span class="pulsing-dot"></span>
                     <span id="status-text">Connected</span>
                 </div>
+                <!-- Khamsat Token Setting -->
+                <div class="token-setting glass-effect">
+                    <div class="token-header">
+                        <i class="fa-solid fa-key"></i> Khamsat Token
+                    </div>
+                    <input type="password" id="khamsat-token" placeholder="أدخل التوكين هنا..." value="">
+                    <p class="token-note">التوكين يحفظ محلياً فقط في المتصفح.</p>
+                </div>
             </div>
         </header>
 
@@ -95,6 +103,31 @@
         </div>
     </div>
 
+    <!-- Comment Modal -->
+    <div id="comment-modal" class="modal-overlay">
+        <div class="modal-container glass-effect comment-modal-container">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-comment-dots"></i> إضافة تعليق</h3>
+                <button id="comment-close" class="modal-close-btn">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="comment-post-info">
+                <h4 id="comment-post-title"></h4>
+                <div id="comment-author-info"></div>
+            </div>
+            <div class="modal-body">
+                <textarea id="comment-text" class="comment-textarea" placeholder="اكتب تعليقك هنا..." rows="5"></textarea>
+                <div id="comment-status-msg" class="status-msg"></div>
+                <div class="modal-actions">
+                    <button id="submit-btn" class="submit-btn">
+                        <i class="fa-solid fa-paper-plane"></i> إرسال التعليق
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const API_BASE = ''; // Same host
         const PAGE_LIMIT = 7;
@@ -113,7 +146,18 @@
             totalPagesEl: document.getElementById('total-pages'),
             prevPageBtn: document.getElementById('prev-page'),
             nextPageBtn: document.getElementById('next-page'),
+            khamsatToken: document.getElementById('khamsat-token'),
         };
+
+        // Load token from localStorage
+        const savedToken = localStorage.getItem('khamsat_token');
+        if (savedToken) {
+            elements.khamsatToken.value = savedToken;
+        }
+
+        elements.khamsatToken.addEventListener('change', (e) => {
+            localStorage.setItem('khamsat_token', e.target.value);
+        });
 
         // --- Time Parsing & Formatting ---
         function getRealPostTime(post) {
@@ -247,9 +291,14 @@
                     <div class="post-action">
                         <div class="action-top">
                             <span class="id-tag">#${post.id || post.postId.replace('forum_post-', '')}</span>
-                            <a href="${postUrl}" target="_blank" class="external-link-btn" title="فتح في خمسات">
-                                <i class="fa-solid fa-external-link-alt"></i>
-                            </a>
+                            <div class="post-icon-actions">
+                                <button class="comment-icon-btn" onclick="event.stopPropagation(); openCommentModal(${JSON.stringify(post).replace(/"/g, '&quot;')})" title="إضافة تعليق">
+                                    <i class="fa-solid fa-comment"></i>
+                                </button>
+                                <a href="${postUrl}" target="_blank" class="external-link-btn" title="فتح في خمسات">
+                                    <i class="fa-solid fa-external-link-alt"></i>
+                                </a>
+                            </div>
                         </div>
                         ${post.postDetails ? '<i class="fa-solid fa-expand expand-icon"></i>' : ''}
                     </div>
@@ -388,12 +437,95 @@
             document.body.style.overflow = '';
         }
 
+        // --- Comment Functions ---
+        const commentModal = document.getElementById('comment-modal');
+        const commentPostTitle = document.getElementById('comment-post-title');
+        const commentText = document.getElementById('comment-text');
+        const submitBtn = document.getElementById('submit-btn');
+        const commentStatusMsg = document.getElementById('comment-status-msg');
+        let currentPostId = null;
+
+        function openCommentModal(post) {
+            currentPostId = post.id;
+            commentPostTitle.innerText = post.title || 'بدون عنوان';
+            document.getElementById('comment-author-info').innerText = post.requester?.name || 'مشتري غير معروف';
+            commentText.value = '';
+            commentStatusMsg.innerText = '';
+            commentStatusMsg.className = 'status-msg';
+            
+            commentModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            commentText.focus();
+        }
+
+        async function postComment() {
+            const content = commentText.value.trim();
+            const token = elements.khamsatToken.value.trim();
+
+            if (!content) {
+                showCommentStatus('يرجى كتابة تعليق.', 'error');
+                return;
+            }
+            if (!token) {
+                showCommentStatus('يرجى إضافة توكين خمسات في القائمة الجانبية.', 'error');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جار الإرسال...';
+            
+            try {
+                const res = await fetch(`${API_BASE}/comment`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: currentPostId,
+                        content: content,
+                        token: token
+                    })
+                });
+
+                const data = await res.json();
+                if (data.ok) {
+                    showCommentStatus('تم إرسال التعليق بنجاح!', 'success');
+                    setTimeout(closeCommentModal, 2000);
+                } else {
+                    showCommentStatus(`خطأ: ${data.error || 'فشل الإرسال'}`, 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> إرسال التعليق';
+                }
+            } catch (err) {
+                showCommentStatus(`خطأ في الاتصال بالسيرفر.`, 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> إرسال التعليق';
+            }
+        }
+
+        function showCommentStatus(msg, type) {
+            commentStatusMsg.innerText = msg;
+            commentStatusMsg.className = `status-msg ${type}`;
+        }
+
+        function closeCommentModal() {
+            commentModal.classList.remove('active');
+            document.body.style.overflow = '';
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> إرسال التعليق';
+        }
+
+        document.getElementById('comment-close').addEventListener('click', closeCommentModal);
+        submitBtn.addEventListener('click', postComment);
+
+        // Restore Modal Close Listeners
         modalClose.addEventListener('click', closeModal);
         modal.addEventListener('click', (e) => {
             if (e.target === modal) closeModal();
         });
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
+            if (e.key === 'Escape') {
+                closeModal();
+                closeCommentModal();
+            }
         });
 
         // Initialize

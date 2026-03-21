@@ -156,6 +156,25 @@ app.post('/poll/now', async (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+// POST /comment
+// Submit a reply to a post using a Khamsat token.
+// ─────────────────────────────────────────────────────────────────────────────
+const { submitComment } = require('./probe');
+app.post('/comment', async (req, res) => {
+  const { id, content, token, lastId } = req.body;
+  if (!id || !content || !token) {
+    return res.status(400).json({ ok: false, error: 'Missing required fields' });
+  }
+
+  try {
+    const response = await submitComment(id, content, token, lastId || 0);
+    res.json({ ok: true, data: response });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // POST /rescan
 // Re-scan posts that are missing postDetails or buyer level.
 // Body: { "limit": 50 } (optional, defaults to 20)
