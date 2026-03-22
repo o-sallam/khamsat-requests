@@ -43,6 +43,17 @@ pnpm run dev
 
 Dashboard: `http://localhost:3000/`
 
+### 🔐 Authenticated Requests (Optional)
+
+To post comments or get logged-in views, set your session cookie in `.env`:
+
+```bash
+cp .env.example .env
+# Edit .env and add KHAMSAT_COOKIES with your rack.session value
+```
+
+Get `rack.session` from your browser: DevTools → Application → Cookies → khamsat.com.
+
 ---
 
 ## 📊 REST API Endpoints

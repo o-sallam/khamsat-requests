@@ -65,7 +65,7 @@
                         <i class="fa-solid fa-key"></i> Khamsat Token
                     </div>
                     <input type="password" id="khamsat-token" placeholder="أدخل التوكين هنا..." value="">
-                    <p class="token-note">التوكين يحفظ محلياً فقط في المتصفح.</p>
+                    <p class="token-note">التوكين يحفظ محلياً فقط. ابحث عن <code style="color: var(--accent);">name="token"</code> في Elements tab بموقع خمسات.</p>
                 </div>
             </div>
         </header>
@@ -117,12 +117,20 @@
                 <div id="comment-author-info"></div>
             </div>
             <div class="modal-body">
-                <textarea id="comment-text" class="comment-textarea" placeholder="اكتب تعليقك هنا..." rows="5"></textarea>
-                <div id="comment-status-msg" class="status-msg"></div>
-                <div class="modal-actions">
-                    <button id="submit-btn" class="submit-btn">
-                        <i class="fa-solid fa-paper-plane"></i> إرسال التعليق
-                    </button>
+                <div class="comment-modal-content">
+                    <div class="comment-list-section">
+                        <div class="comment-list-header">التعليقات</div>
+                        <div id="comment-list" class="comment-list"></div>
+                    </div>
+                    <div class="comment-form-section">
+                        <textarea id="comment-text" class="comment-textarea" placeholder="اكتب تعليقك هنا..." rows="5"></textarea>
+                        <div id="comment-status-msg" class="status-msg"></div>
+                        <div class="modal-actions">
+                            <button id="submit-btn" class="submit-btn">
+                                <i class="fa-solid fa-paper-plane"></i> إرسال التعليق
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -292,8 +300,9 @@
                         <div class="action-top">
                             <span class="id-tag">#${post.id || post.postId.replace('forum_post-', '')}</span>
                             <div class="post-icon-actions">
-                                <button class="comment-icon-btn" onclick="event.stopPropagation(); openCommentModal(${JSON.stringify(post).replace(/"/g, '&quot;')})" title="إضافة تعليق">
+                                <button class="comment-icon-btn" onclick="event.stopPropagation(); openCommentModal(${JSON.stringify(post).replace(/"/g, '&quot;')})" title="إضافة تعليق${post.commentsCount != null ? ` (${post.commentsCount} تعليق)` : ''}">
                                     <i class="fa-solid fa-comment"></i>
+                                    ${post.commentsCount != null ? `<span class="comment-count">${post.commentsCount}</span>` : ''}
                                 </button>
                                 <a href="${postUrl}" target="_blank" class="external-link-btn" title="فتح في خمسات">
                                     <i class="fa-solid fa-external-link-alt"></i>
@@ -444,14 +453,68 @@
         const submitBtn = document.getElementById('submit-btn');
         const commentStatusMsg = document.getElementById('comment-status-msg');
         let currentPostId = null;
+        let currentPostUrl = null;
 
-        function openCommentModal(post) {
-            currentPostId = post.id;
-            commentPostTitle.innerText = post.title || 'بدون عنوان';
-            document.getElementById('comment-author-info').innerText = post.requester?.name || 'مشتري غير معروف';
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function renderCommentList(comments) {
+            const listEl = document.getElementById('comment-list');
+            if (!Array.isArray(comments) || comments.length === 0) {
+                listEl.innerHTML = '<div class="comment-empty">لا توجد تعليقات بعد.</div>';
+                return;
+            }
+
+            listEl.innerHTML = comments.map((comment) => {
+                const name = escapeHtml(comment.user?.name || 'مستخدم');
+                const profile = comment.user?.profileUrl ? `https://khamsat.com${comment.user.profileUrl}` : '#';
+                const avatar = comment.user?.avatar || 'https://via.placeholder.com/32';
+                const timeText = escapeHtml(comment.timing?.text || '');
+                const content = comment.content || '';
+
+                return `
+                    <div class="comment-item">
+                        <img src="${avatar}" class="comment-avatar" alt="${name}" loading="lazy">
+                        <div class="comment-body">
+                            <div class="comment-meta">
+                                <a href="${profile}" target="_blank" class="comment-user">${name}</a>
+                                <span class="comment-time">${timeText}</span>
+                            </div>
+                            <div class="comment-text">${content}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function fetchLatestPostFromPage(postId) {
+            try {
+                const res = await fetch(`${API_BASE}/posts/all?page=${currentPage}&limit=${PAGE_LIMIT}`);
+                const data = await res.json();
+                return data.posts?.find(p => String(p.id) === String(postId)) || null;
+            } catch (err) {
+                return null;
+            }
+        }
+
+        async function openCommentModal(post) {
+            const latestPost = await fetchLatestPostFromPage(post.id);
+            const activePost = latestPost || post;
+
+            currentPostId = activePost.id;
+            currentPostUrl = activePost.postUrl;
+            commentPostTitle.innerText = activePost.title || 'بدون عنوان';
+            document.getElementById('comment-author-info').innerText = activePost.requester?.name || 'مشتري غير معروف';
             commentText.value = '';
             commentStatusMsg.innerText = '';
             commentStatusMsg.className = 'status-msg';
+            renderCommentList(activePost.comments || []);
             
             commentModal.classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -480,6 +543,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         id: currentPostId,
+                        url: currentPostUrl,
                         content: content,
                         token: token
                     })
@@ -534,6 +598,7 @@
 
         // Polling interval for status
         setInterval(fetchStatus, 5000);
+        setInterval(() => fetchPage(currentPage), 15000);
     </script>
 </body>
 

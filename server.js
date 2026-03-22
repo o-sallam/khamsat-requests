@@ -161,13 +161,13 @@ app.post('/poll/now', async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 const { submitComment } = require('./probe');
 app.post('/comment', async (req, res) => {
-  const { id, content, token, lastId } = req.body;
+  const { id, content, token, lastId, url } = req.body;
   if (!id || !content || !token) {
     return res.status(400).json({ ok: false, error: 'Missing required fields' });
   }
 
   try {
-    const response = await submitComment(id, content, token, lastId || 0);
+    const response = await submitComment(id, content, token, lastId || 0, url);
     res.json({ ok: true, data: response });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });
@@ -182,13 +182,13 @@ app.post('/comment', async (req, res) => {
 app.post('/rescan', async (req, res) => {
   const limit = Math.min(parseInt(req.query.limit) || parseInt(req.body?.limit) || 20, 100);
   
-  // Find posts missing details
+  // Find posts missing details or commentsCount
   const missingDetails = poller.getAllPosts()
-    .filter(p => !p.postDetails || (!p.requester?.level && !p.requester?.userType))
+    .filter(p => !p.postDetails || (!p.requester?.level && !p.requester?.userType) || p.commentsCount == null)
     .slice(0, limit);
   
   if (missingDetails.length === 0) {
-    return res.json({ ok: true, message: 'All posts have details.', scanned: 0 });
+    return res.json({ ok: true, message: 'All posts have full details.', scanned: 0 });
   }
   
   res.json({ 

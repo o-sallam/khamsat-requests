@@ -1,10 +1,30 @@
 //probe.js
 const { execFile } = require('child_process');
 const { parse } = require('node-html-parser');
+const { parseCommentsHtml } = require('./parser');
 
 const KHAMSAT_AJAX_URL = process.env.KHAMSAT_URL || 'https://khamsat.com/ajax/load_more/community/requests';
 const REQUEST_TIMEOUT_MS = 25000;
 const COOKIE_FILE = '/tmp/khamsat_cookies.txt';
+
+/**
+ * User session cookies for authenticated requests (e.g. rack.session).
+ * Set KHAMSAT_COOKIES env var. Accepts:
+ *   - Full header: rack.session=VALUE; khamsat_cart=...; rb=%2F
+ *   - Name + value: rack.session VALUE (browser copy format)
+ *   - Just value: VALUE (we prepend rack.session=)
+ */
+function getSessionCookies() {
+  const raw = process.env.KHAMSAT_COOKIES || '';
+  if (!raw.trim()) return null;
+  const s = raw.trim();
+  if (s.includes('=')) return s;
+  if (s.toLowerCase().startsWith('rack.session')) {
+    const val = s.slice(12).trim(); // "rack.session" = 12 chars
+    return val ? `rack.session=${val}` : null;
+  }
+  return `rack.session=${s}`;
+}
 
 // Lazy-loaded Puppeteer instance
 let _browser = null;
@@ -37,14 +57,16 @@ async function closeBrowser() {
 
 /**
  * Execute a curl command and return its stdout as a string.
+ * Uses KHAMSAT_COOKIES when set for authenticated (logged-in) requests.
  */
 function curlPost(url, data, extraArgs = []) {
   return new Promise((resolve, reject) => {
+    const cookies = getSessionCookies();
     const args = [
       '-s',
       '--max-time', String(Math.floor(REQUEST_TIMEOUT_MS / 1000)),
       '-X', 'POST',
-      '--cookie-jar', COOKIE_FILE, '--cookie', COOKIE_FILE,
+      ...(cookies ? ['-H', `Cookie: ${cookies}`] : ['--cookie-jar', COOKIE_FILE, '--cookie', COOKIE_FILE]),
       '-H', 'Content-Type: application/x-www-form-urlencoded',
       '-H', 'X-Requested-With: XMLHttpRequest',
       '-H', 'Referer: https://khamsat.com/community/requests',
@@ -168,17 +190,89 @@ async function probeId(id, overrideUrl = null) {
 }
 
 /**
+ * Quick probe using curl instead of Puppeteer.
+ * Fetches the post page and extracts details, user type, comments, and commentsCount.
+ */
+async function quickProbe(id, postUrl = null) {
+  const url = postUrl
+    ? (postUrl.startsWith('http') ? postUrl : `https://khamsat.com${postUrl}`)
+    : `https://khamsat.com/community/requests/${id}`;
+
+  const cookies = getSessionCookies();
+  const args = [
+    '-s',
+    '--max-time', '20',
+    '-L',
+    '-H', 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+    ...(cookies ? ['-H', `Cookie: ${cookies}`] : []),
+    url
+  ];
+
+  return new Promise((resolve) => {
+    execFile('curl', args, { timeout: 22000 }, (err, stdout) => {
+      if (err || !stdout || stdout.length < 500) {
+        return resolve({ status: 'error', error: err ? err.message : 'Empty response' });
+      }
+
+      const post = parsePostPage(stdout, id, url);
+      if (!post) return resolve({ status: 'not_found' });
+
+      resolve({ status: 'new', post });
+    });
+  });
+}
+
+/**
+ * Fetch post page HTML via curl and extract comments count.
+ * Uses postUrl from known_posts (e.g. /community/requests/784066).
+ * Parses the card: <div data-commentable="true"> ... <h3>التعليقات (31)</h3>
+ */
+async function fetchCommentsCountFromUrl(postUrl) {
+  if (!postUrl) return null;
+  const url = postUrl.startsWith('http') ? postUrl : `https://khamsat.com${postUrl}`;
+
+  const cookies = getSessionCookies();
+  const args = [
+    '-s',
+    '--max-time', '20',
+    '-L',
+    '-H', 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+    ...(cookies ? ['-H', `Cookie: ${cookies}`] : []),
+    url
+  ];
+
+  return new Promise((resolve) => {
+    execFile('curl', args, { timeout: 22000 }, (err, stdout) => {
+      if (err || !stdout || stdout.length < 500) return resolve(null);
+      resolve(extractCommentsCountFromHtml(stdout));
+    });
+  });
+}
+
+/**
+ * Extract comments count from post page HTML.
+ * Expects structure: <div data-commentable="true" data-commentable-type="forum_post"> ... <h3>التعليقات (31)</h3>
+ */
+function extractCommentsCountFromHtml(html) {
+  if (!html || html.length < 200) return null;
+  const comments = parseCommentsHtml(html);
+  return comments.length;
+}
+
+/**
  * Fetch a user's profile and extract their buyer level.
  */
 async function probeUserProfile(profileUrl) {
   if (!profileUrl) return null;
   const url = profileUrl.startsWith('http') ? profileUrl : `https://khamsat.com${profileUrl}`;
 
+  const cookies = getSessionCookies();
   const args = [
     '-s',
     '--max-time', '15',
     '-L',
     '-H', 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    ...(cookies ? ['-H', `Cookie: ${cookies}`] : []),
     url
   ];
 
@@ -310,6 +404,9 @@ function parsePostPage(html, id, url) {
     lastReplyMobile: '',
   };
 
+  const commentsCount = extractCommentsCountFromHtml(html);
+  const comments = parseCommentsHtml(html);
+
   return {
     id: Number(id),
     idString: String(id),
@@ -322,6 +419,8 @@ function parsePostPage(html, id, url) {
     userType: userType, // also at top level as requested
     timing,
     lastReplier: null,
+    commentsCount, // e.g. 31 from "التعليقات (31)"
+    comments, // Added list of actual comments
     detectedAt: new Date().toISOString(),
     discoveredVia: 'probe',
   };
@@ -402,23 +501,51 @@ function parsePostsHtml(html) {
 
 /**
  * Submit a comment reply to a post.
- * @param {number} postId
- * @param {string} content
- * @param {string} token    - CSRF/Session token for Khamsat
- * @param {number} lastId   - Optional, last comment ID for sync
- * @returns {Promise<Object>} - Parsed JSON response from Khamsat
+ * Uses Khamsat's /discussion/reply endpoint with commentable_type=forum_post.
  */
-async function submitComment(postId, content, token, lastId = 0) {
-  const url = `https://khamsat.com/community/requests/${postId}/comment`;
-  const data = `content=${encodeURIComponent(content)}&token=${encodeURIComponent(token)}&confirm=0&last_id=${lastId}`;
-  
+async function submitComment(postId, content, token, lastId = 0, overrideUrl = null) {
+  const referer = overrideUrl
+    ? (overrideUrl.startsWith('http') ? overrideUrl : `https://khamsat.com${overrideUrl}`)
+    : `https://khamsat.com/community/requests/${postId}`;
+
+  const url = 'https://khamsat.com/community/discussion/reply';
+  const data = [
+    `content=${encodeURIComponent(content)}`,
+    `token=${encodeURIComponent(token)}`,
+    'confirm=0',
+    `last_id=${lastId}`,
+    'commentable_type=forum_post',
+    `commentable_id=${postId}`
+  ].join('&');
+
+  const hasCookies = !!getSessionCookies();
+  console.log(`[comment] POST ${url} (post ${postId}, cookies: ${hasCookies ? 'yes' : 'no'})`);
+
   try {
-    const raw = await curlPost(url, data);
-    return JSON.parse(raw);
+    const raw = await curlPost(url, data, [
+      '-H', `Referer: ${referer}`,
+      '-H', 'Origin: https://khamsat.com'
+    ]);
+    
+    try {
+      return JSON.parse(raw);
+    } catch (e) {
+      const preview = (raw || '').trim().substring(0, 200).replace(/\s+/g, ' ');
+      console.error(`[comment] Non-JSON from ${url}. Preview:`, preview);
+      let hint = '';
+      if (/سجّل دخول|login|تسجيل الدخول/i.test(preview)) {
+        hint = ' الجلسة منتهية — حدّث KHAMSAT_COOKIES (rack.session) من المتصفح.';
+      } else if (/<html|<!DOCTYPE/i.test(preview)) {
+        hint = ' خمسات أعاد HTML بدل JSON — تأكد من صلاحية الكوكي والتوكين.';
+      } else {
+        hint = ` الاستجابة: "${preview.slice(0, 80)}..."`;
+      }
+      throw new Error(`استجابة غير صالحة من خمسات.${hint}`);
+    }
   } catch (err) {
     console.error(`[comment] Failed for ID ${postId}: ${err.message}`);
     throw err;
   }
 }
 
-module.exports = { fetchLatestPosts, probeId, probeUserProfile, parsePostsHtml, submitComment, closeBrowser };
+module.exports = { fetchLatestPosts, probeId, quickProbe, probeUserProfile, parsePostsHtml, submitComment, closeBrowser, fetchCommentsCountFromUrl };
