@@ -97,7 +97,7 @@ body {
   font-weight: 800;
   color: var(--primary);
   display: flex;
-  flex-direction: column;
+  flex-direction: row-reverse;
   align-items: center;
   text-align: center;
   gap: 0.8rem;

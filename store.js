@@ -24,10 +24,31 @@ function loadKnownIds() {
 }
 
 function saveKnownIds(idSet) {
-  const sorted = [...idSet]
+  let existing = new Set();
+  try {
+    const raw = fs.readFileSync(IDS_FILE, 'utf8');
+    if (raw && raw.trim().length > 0) {
+      existing = new Set(JSON.parse(raw));
+    }
+  } catch {
+    existing = new Set();
+  }
+
+  // Merge new IDs with existing
+  for (const id of idSet) {
+    existing.add(id);
+  }
+
+  const sorted = [...existing]
     .map(Number)
     .sort((a, b) => b - a)
     .map(String);
+    
+  if (sorted.length === 0 && existing.size > 0) {
+    console.error('[store] ALERT: Attempted to write empty IDs array! Aborting save.');
+    return;
+  }
+
   fs.writeFileSync(IDS_FILE, JSON.stringify(sorted, null, 2));
 }
 
@@ -41,7 +62,40 @@ function loadKnownPosts() {
 }
 
 function saveKnownPosts(posts) {
-  const sorted = [...posts].sort((a, b) => b.id - a.id);
+  let existing = [];
+  try {
+    const raw = fs.readFileSync(POSTS_FILE, 'utf8');
+    if (raw && raw.trim().length > 0) {
+      existing = JSON.parse(raw);
+    }
+  } catch {
+    existing = [];
+  }
+
+  // Ensure existing is an array
+  if (!Array.isArray(existing)) {
+    existing = [];
+  }
+
+  const mergedById = new Map();
+  for (const post of existing) {
+    const key = String(post.id || post.postId || '');
+    if (key) mergedById.set(key, post);
+  }
+  for (const post of posts) {
+    const key = String(post.id || post.postId || '');
+    if (key) mergedById.set(key, post);
+  }
+
+  const merged = [...mergedById.values()];
+  const sorted = merged.sort((a, b) => (b.id || 0) - (a.id || 0));
+  
+  // NEVER write an empty array if we had data before, unless both are truly empty
+  if (sorted.length === 0 && existing.length > 0) {
+    console.error('[store] ALERT: Attempted to write empty posts array! Aborting save.');
+    return;
+  }
+  
   fs.writeFileSync(POSTS_FILE, JSON.stringify(sorted, null, 2));
 }
 

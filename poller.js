@@ -117,19 +117,35 @@ async function poll() {
       }
     }
 
-    // --- PREDICTIVE PROBING ---
+    // --- GAP FILLING & PREDICTIVE PROBING ---
     const lastMaxId = getMaxId();
-    console.log(`[poller] Predictive probing starting from ID ${lastMaxId + 1}...`);
-    for (let nextId = lastMaxId + 1; nextId <= lastMaxId + 3; nextId++) {
+    // Look back up to 15 IDs to catch delayed approvals, and forward 5 IDs for new posts
+    const windowStart = Math.max(1, lastMaxId - 15);
+    const windowEnd = lastMaxId + 5;
+    
+    const candidatesToProbe = [];
+    for (let id = windowStart; id <= windowEnd; id++) {
+      if (!knownIds.has(String(id))) {
+        candidatesToProbe.push(id);
+      }
+    }
+
+    // Limit to probing 5 missing IDs per cycle to avoid blocking
+    const toProbe = candidatesToProbe.slice(0, 5);
+    
+    if (toProbe.length > 0) {
+      console.log(`[poller] Gap/Predictive probing ${toProbe.length} IDs: ${toProbe.join(', ')} (Max: ${lastMaxId})`);
+    }
+
+    for (const nextId of toProbe) {
       const idStr = String(nextId);
-      if (knownIds.has(idStr)) continue;
 
       await sleep(2500 + Math.random() * 2500);
 
       try {
         const res = await probeId(nextId);
         if (res.status === 'new' && res.post) {
-          console.log(`[poller] 🎯 FOUND FUTURE POST ${nextId} via predictive probe!`);
+          console.log(`[poller] 🎯 FOUND MISSING/FUTURE POST ${nextId} via probe!`);
 
           const post = res.post;
           freshPosts.push(post);
@@ -142,7 +158,7 @@ async function poll() {
           store.saveKnownPosts(allPosts);
         }
       } catch (e) {
-        console.error(`[poller] ⚠️ Predictive probe failed for ID ${nextId}:`, e.message);
+        console.error(`[poller] ⚠️ Gap/Predictive probe failed for ID ${nextId}:`, e.message);
       }
     }
 
