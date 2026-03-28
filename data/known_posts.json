@@ -1,5 +1,557 @@
 [
   {
+    "id": 784528,
+    "idString": "784528",
+    "postId": "forum_post-784528",
+    "index": 0,
+    "title": "كتابة برنامج plc باستخدام logo plc  لغة ladder",
+    "postUrl": "/community/requests/784528-%D9%83%D8%AA%D8%A7%D8%A8%D8%A9-%D8%A8%D8%B1%D9%86%D8%A7%D9%85%D8%AC-plc-%D8%A8%D8%A7%D8%B3%D8%AA%D8%AE%D8%AF%D8%A7%D9%85-logo-plc-%D9%84%D8%BA%D8%A9-ladder",
+    "requester": {
+      "name": "حسان ح.",
+      "profileUrl": "/user/bnhassan",
+      "avatar": "https://avatars.hsoubcdn.com/1fbeb4f19356bb4e17add955fcdf8f6b?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ 42 دقيقة",
+        "timestamp": "28/03/2026 14:05:09 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 40 دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.123Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784526,
+    "idString": "784526",
+    "postId": "forum_post-784526",
+    "index": 0,
+    "title": "تصميم ريل احترافي",
+    "postUrl": "/community/requests/784526-%D8%AA%D8%B5%D9%85%D9%8A%D9%85-%D8%B1%D9%8A%D9%84-%D8%A7%D8%AD%D8%AA%D8%B1%D8%A7%D9%81%D9%8A",
+    "requester": {
+      "name": ".Atef M",
+      "profileUrl": "/user/karammatef",
+      "avatar": "https://avatars.hsoubcdn.com/e51fb2608c488b21b6e2ce4b05a5d258?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ 49 دقيقة",
+        "timestamp": "28/03/2026 13:58:50 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 9 دقائق"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.122Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784525,
+    "idString": "784525",
+    "postId": "forum_post-784525",
+    "index": 0,
+    "title": "مساعد شخصي لإنجاز بعض المهام",
+    "postUrl": "/community/requests/784525-%D9%85%D8%B3%D8%A7%D8%B9%D8%AF-%D8%B4%D8%AE%D8%B5%D9%8A-%D9%84%D8%A5%D9%86%D8%AC%D8%A7%D8%B2-%D8%A8%D8%B9%D8%B6-%D8%A7%D9%84%D9%85%D9%87%D8%A7%D9%85",
+    "requester": {
+      "name": ".Ismail M",
+      "profileUrl": "/user/ismail_mohamed101",
+      "avatar": "https://avatars.hsoubcdn.com/9fff46bc69a74eecafeb418be87c7861?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ ساعة ودقيقتين",
+        "timestamp": "28/03/2026 13:45:25 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل أقل من دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.119Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784524,
+    "idString": "784524",
+    "postId": "forum_post-784524",
+    "index": 0,
+    "title": "نطلب اسعار اشهار فيديوهات في تكتوك",
+    "postUrl": "/community/requests/784524-%D9%86%D8%B7%D9%84%D8%A8-%D8%A7%D8%B3%D8%B9%D8%A7%D8%B1-%D8%A7%D8%B4%D9%87%D8%A7%D8%B1-%D9%81%D9%8A%D8%AF%D9%8A%D9%88%D9%87%D8%A7%D8%AA-%D9%81%D9%8A-%D8%AA%D9%83%D8%AA%D9%88%D9%83",
+    "requester": {
+      "name": ".Ammar B",
+      "profileUrl": "/user/kald759",
+      "avatar": "https://avatars.hsoubcdn.com/a1c5e0642e5fddfbe70209866f149dc6?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ ساعة و5 دقائق",
+        "timestamp": "28/03/2026 13:42:10 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ ساعة و4 دقائق"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.125Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784523,
+    "idString": "784523",
+    "postId": "forum_post-784523",
+    "index": 0,
+    "title": "مطلوب مبرمج front-end خبرة في التعديل",
+    "postUrl": "/community/requests/784523-%D9%85%D8%B7%D9%84%D9%88%D8%A8-%D9%85%D8%A8%D8%B1%D9%85%D8%AC-front-end-%D8%AE%D8%A8%D8%B1%D8%A9-%D9%81%D9%8A-%D8%A7%D9%84%D8%AA%D8%B9%D8%AF%D9%8A%D9%84",
+    "requester": {
+      "name": ".Amar A",
+      "profileUrl": "/user/mohammad_elhosmy",
+      "avatar": "https://avatars.hsoubcdn.com/c7f025b1010c6772cea24d94cd7888f8?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ ساعة و10 دقائق",
+        "timestamp": "28/03/2026 13:37:26 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 3 دقائق"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.120Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784522,
+    "idString": "784522",
+    "postId": "forum_post-784522",
+    "index": 0,
+    "title": "مطلوب معلم لغة عربية لغير الناطقين بها لاعطاء كورس",
+    "postUrl": "/community/requests/784522-%D9%85%D8%B7%D9%84%D9%88%D8%A8-%D9%85%D8%B9%D9%84%D9%85-%D9%84%D8%BA%D8%A9-%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9-%D9%84%D8%BA%D9%8A%D8%B1-%D8%A7%D9%84%D9%86%D8%A7%D8%B7%D9%82%D9%8A%D9%86-%D8%A8%D9%87%D8%A7-%D9%84%D8%A7%D8%B9%D8%B7%D8%A7%D8%A1-%D9%83%D9%88%D8%B1%D8%B3",
+    "requester": {
+      "name": "لبنى ا.",
+      "profileUrl": "/user/lubna_adnan",
+      "avatar": "https://avatars.hsoubcdn.com/540bf8cda65dcdea9d5d96a865a86701?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ ساعة و24 دقيقة",
+        "timestamp": "28/03/2026 13:23:38 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ ساعة و7 دقائق"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.125Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784521,
+    "idString": "784521",
+    "postId": "forum_post-784521",
+    "index": 0,
+    "title": "اضافة موقع الكتروني على google maps",
+    "postUrl": "/community/requests/784521-%D8%A7%D8%B6%D8%A7%D9%81%D8%A9-%D9%85%D9%88%D9%82%D8%B9-%D8%A7%D9%84%D9%83%D8%AA%D8%B1%D9%88%D9%86%D9%8A-%D8%B9%D9%84%D9%89-google-maps",
+    "requester": {
+      "name": ".Amro A",
+      "profileUrl": "/user/yam_am",
+      "avatar": "https://avatars.hsoubcdn.com/0e951a54a557bc86ec9bcc294dc146b9?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ ساعة و25 دقيقة",
+        "timestamp": "28/03/2026 13:22:18 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ ساعة و4 دقائق"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.125Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784519,
+    "idString": "784519",
+    "postId": "forum_post-784519",
+    "index": 0,
+    "title": "ريل. بالذكاء   ai",
+    "postUrl": "/community/requests/784519-%D8%B1%D9%8A%D9%84.-%D8%A8%D8%A7%D9%84%D8%B0%D9%83%D8%A7%D8%A1-ai",
+    "requester": {
+      "name": ".Suhaib A",
+      "profileUrl": "/user/suhaib2222",
+      "avatar": "https://avatars.hsoubcdn.com/369393f75fff7233ab330ee5fe260ce6?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ ساعة و57 دقيقة",
+        "timestamp": "28/03/2026 12:50:53 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ ساعة ودقيقتين"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.124Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784518,
+    "idString": "784518",
+    "postId": "forum_post-784518",
+    "index": 0,
+    "title": "انشاء ريلز ai",
+    "postUrl": "/community/requests/784518-%D8%A7%D9%86%D8%B4%D8%A7%D8%A1-%D8%B1%D9%8A%D9%84%D8%B2-ai",
+    "requester": {
+      "name": ".Suhaib A",
+      "profileUrl": "/user/suhaib2222",
+      "avatar": "https://avatars.hsoubcdn.com/369393f75fff7233ab330ee5fe260ce6?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ ساعتين و9 دقائق",
+        "timestamp": "28/03/2026 12:38:31 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 10 دقائق"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.122Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784516,
+    "idString": "784516",
+    "postId": "forum_post-784516",
+    "index": 0,
+    "title": "تصميم لوجو",
+    "postUrl": "/community/requests/784516-%D8%AA%D8%B5%D9%85%D9%8A%D9%85-%D9%84%D9%88%D8%AC%D9%88",
+    "requester": {
+      "name": "فرح ا.",
+      "profileUrl": "/user/%D8%A2%D9%84%D8%AD%D8%A7%D9%86-%D8%A3%D8%AD%D9%85%D8%AF",
+      "avatar": "https://avatars.hsoubcdn.com/3e083dd5722c91fb0bdd49c6738804f7?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ ساعتين و38 دقيقة",
+        "timestamp": "28/03/2026 12:09:27 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 41 دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.123Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784512,
+    "idString": "784512",
+    "postId": "forum_post-784512",
+    "index": 0,
+    "title": "مطلوب مصمم مبدع لإدارة محتوى وتصاميم خارج الصندوق",
+    "postUrl": "/community/requests/784512-%D9%85%D8%B7%D9%84%D9%88%D8%A8-%D9%85%D8%B5%D9%85%D9%85-%D9%85%D8%A8%D8%AF%D8%B9-%D9%84%D8%A5%D8%AF%D8%A7%D8%B1%D8%A9-%D9%85%D8%AD%D8%AA%D9%88%D9%89-%D9%88%D8%AA%D8%B5%D8%A7%D9%85%D9%8A%D9%85-%D8%AE%D8%A7%D8%B1%D8%AC-%D8%A7%D9%84%D8%B5%D9%86%D8%AF%D9%88%D9%82",
+    "requester": {
+      "name": "اروى ع.",
+      "profileUrl": "/user/devolt00",
+      "avatar": "https://avatars.hsoubcdn.com/761f694ee7f71d6dc11306244c3c5cd7?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ 5 ساعات و9 دقائق",
+        "timestamp": "28/03/2026 09:38:40 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 4 دقائق"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.120Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784510,
+    "idString": "784510",
+    "postId": "forum_post-784510",
+    "index": 0,
+    "title": "مطلوب مبرمج فلاتر",
+    "postUrl": "/community/requests/784510-%D9%85%D8%B7%D9%84%D9%88%D8%A8-%D9%85%D8%A8%D8%B1%D9%85%D8%AC-%D9%81%D9%84%D8%A7%D8%AA%D8%B1",
+    "requester": {
+      "name": "خليل ح.",
+      "profileUrl": "/user/yasmineakrm",
+      "avatar": "https://avatars.hsoubcdn.com/ee0b50ba782bf5d1e62b3596aab23fe9?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ 5 ساعات و31 دقيقة",
+        "timestamp": "28/03/2026 09:16:07 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل أقل من دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.118Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784506,
+    "idString": "784506",
+    "postId": "forum_post-784506",
+    "index": 0,
+    "title": "اريد \"لوغو او شعار\" حقوق قناتي علتغرام",
+    "postUrl": "/community/requests/784506-%D8%A7%D8%B1%D9%8A%D8%AF-%D9%84%D9%88%D8%BA%D9%88-%D8%A7%D9%88-%D8%B4%D8%B9%D8%A7%D8%B1-%D8%AD%D9%82%D9%88%D9%82-%D9%82%D9%86%D8%A7%D8%AA%D9%8A-%D8%B9%D9%84%D8%AA%D8%BA%D8%B1%D8%A7%D9%85",
+    "requester": {
+      "name": "سعود ا.",
+      "profileUrl": "/user/ahmod9877",
+      "avatar": "https://avatars.hsoubcdn.com/f9207e44d050f866ec3be703261f7b9f?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ 6 ساعات و55 دقيقة",
+        "timestamp": "28/03/2026 07:52:28 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 25 دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.123Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784502,
+    "idString": "784502",
+    "postId": "forum_post-784502",
+    "index": 0,
+    "title": "كتابة مقالات باستخدام  ChatGPT اللغة الانجليزية",
+    "postUrl": "/community/requests/784502-%D9%83%D8%AA%D8%A7%D8%A8%D8%A9-%D9%85%D9%82%D8%A7%D9%84%D8%A7%D8%AA-%D8%A8%D8%A7%D8%B3%D8%AA%D8%AE%D8%AF%D8%A7%D9%85-chatgpt-%D8%A7%D9%84%D9%84%D8%BA%D8%A9-%D8%A7%D9%84%D8%A7%D9%86%D8%AC%D9%84%D9%8A%D8%B2%D9%8A%D8%A9",
+    "requester": {
+      "name": ".Zaid A",
+      "profileUrl": "/user/wex1987",
+      "avatar": "https://avatars.hsoubcdn.com/659d563dc35028ff542fe08e47ee046a?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ 7 ساعات و32 دقيقة",
+        "timestamp": "28/03/2026 07:15:21 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ ساعة و7 دقائق"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.125Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784498,
+    "idString": "784498",
+    "postId": "forum_post-784498",
+    "index": 0,
+    "title": "احتاج إلى مدقق وباحث",
+    "postUrl": "/community/requests/784498-%D8%A7%D8%AD%D8%AA%D8%A7%D8%AC-%D8%A5%D9%84%D9%89-%D9%85%D8%AF%D9%82%D9%82-%D9%88%D8%A8%D8%A7%D8%AD%D8%AB",
+    "requester": {
+      "name": "Ebdaah إبداع ت.",
+      "profileUrl": "/user/um-ab",
+      "avatar": "https://avatars.hsoubcdn.com/7468ce9d6c08ce8a0c43d6965b5b2c2c?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ 9 ساعات و41 دقيقة",
+        "timestamp": "28/03/2026 05:06:11 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 58 دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.124Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784495,
+    "idString": "784495",
+    "postId": "forum_post-784495",
+    "index": 0,
+    "title": "اريد شخص يعمل لي وكيل ذكاء اصطناعي خاص",
+    "postUrl": "/community/requests/784495-%D8%A7%D8%B1%D9%8A%D8%AF-%D8%B4%D8%AE%D8%B5-%D9%8A%D8%B9%D9%85%D9%84-%D9%84%D9%8A-%D9%88%D9%83%D9%8A%D9%84-%D8%B0%D9%83%D8%A7%D8%A1-%D8%A7%D8%B5%D8%B7%D9%86%D8%A7%D8%B9%D9%8A-%D8%AE%D8%A7%D8%B5",
+    "requester": {
+      "name": "سعيد ا.",
+      "profileUrl": "/user/abosaeed56",
+      "avatar": "https://avatars.hsoubcdn.com/9507a8cb2c14c58773abeac18a2c53aa?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ 11 ساعة و33 دقيقة",
+        "timestamp": "28/03/2026 03:14:37 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 6 دقائق"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.121Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784473,
+    "idString": "784473",
+    "postId": "forum_post-784473",
+    "index": 0,
+    "title": "مطلوب مفرغ بيانات وورد",
+    "postUrl": "/community/requests/784473-%D9%85%D8%B7%D9%84%D9%88%D8%A8-%D9%85%D9%81%D8%B1%D8%BA-%D8%A8%D9%8A%D8%A7%D9%86%D8%A7%D8%AA-%D9%88%D9%88%D8%B1%D8%AF",
+    "requester": {
+      "name": "طارق ح.",
+      "profileUrl": "/user/tariq56799",
+      "avatar": "https://avatars.hsoubcdn.com/7b46f140d6618892755b6698f2e69db8?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ 18 ساعة و53 دقيقة",
+        "timestamp": "27/03/2026 19:54:07 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل أقل من دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.120Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784442,
+    "idString": "784442",
+    "postId": "forum_post-784442",
+    "index": 0,
+    "title": "مهندس ذكاء اصطناعي",
+    "postUrl": "/community/requests/784442-%D9%85%D9%87%D9%86%D8%AF%D8%B3-%D8%B0%D9%83%D8%A7%D8%A1-%D8%A7%D8%B5%D8%B7%D9%86%D8%A7%D8%B9%D9%8A",
+    "requester": {
+      "name": ".Ahmed M",
+      "profileUrl": "/user/ahmed_amer_11",
+      "avatar": "https://avatars.hsoubcdn.com/be44a74104c550b4e9b2dbbee1590aad?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ يوم وساعة",
+        "timestamp": "27/03/2026 13:10:37 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ ساعة و28 دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.125Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784425,
+    "idString": "784425",
+    "postId": "forum_post-784425",
+    "index": 0,
+    "title": "ممنتج فيديوهات سريع وملتزم ومحترف",
+    "postUrl": "/community/requests/784425-%D9%85%D9%85%D9%86%D8%AA%D8%AC-%D9%81%D9%8A%D8%AF%D9%8A%D9%88%D9%87%D8%A7%D8%AA-%D8%B3%D8%B1%D9%8A%D8%B9-%D9%88%D9%85%D9%84%D8%AA%D8%B2%D9%85-%D9%88%D9%85%D8%AD%D8%AA%D8%B1%D9%81",
+    "requester": {
+      "name": ".Abazar A",
+      "profileUrl": "/user/bzo",
+      "avatar": "https://avatars.hsoubcdn.com/19462720ccab708086fe8d88caeea75b?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ يوم و5 ساعات",
+        "timestamp": "27/03/2026 09:32:37 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ ساعة و41 دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.126Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784378,
+    "idString": "784378",
+    "postId": "forum_post-784378",
+    "index": 0,
+    "title": "عمل موقع مستحضرات تجميل",
+    "postUrl": "/community/requests/784378-%D8%B9%D9%85%D9%84-%D9%85%D9%88%D9%82%D8%B9-%D9%85%D8%B3%D8%AA%D8%AD%D8%B6%D8%B1%D8%A7%D8%AA-%D8%AA%D8%AC%D9%85%D9%8A%D9%84",
+    "requester": {
+      "name": ".Ibrahim A",
+      "profileUrl": "/user/ibrahima_awwad",
+      "avatar": "https://avatars.hsoubcdn.com/a78dc1867252c390e26c5951301b7ad6?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ يوم و23 ساعة",
+        "timestamp": "26/03/2026 15:31:17 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 20 دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.122Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784373,
+    "idString": "784373",
+    "postId": "forum_post-784373",
+    "index": 0,
+    "title": "مطلوب استخراج بيانات",
+    "postUrl": "/community/requests/784373-%D9%85%D8%B7%D9%84%D9%88%D8%A8-%D8%A7%D8%B3%D8%AA%D8%AE%D8%B1%D8%A7%D8%AC-%D8%A8%D9%8A%D8%A7%D9%86%D8%A7%D8%AA",
+    "requester": {
+      "name": "خدمات ت.",
+      "profileUrl": "/user/kadmattasweq",
+      "avatar": "https://avatars.hsoubcdn.com/203dc60f8468f2c85e52339beee459c4?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ يومين و9 دقائق",
+        "timestamp": "26/03/2026 14:38:16 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 16 دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.122Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784350,
+    "idString": "784350",
+    "postId": "forum_post-784350",
+    "index": 0,
+    "title": "اعداد جدول شيت اكسل قضايا",
+    "postUrl": "/community/requests/784350-%D8%A7%D8%B9%D8%AF%D8%A7%D8%AF-%D8%AC%D8%AF%D9%88%D9%84-%D8%B4%D9%8A%D8%AA-%D8%A7%D9%83%D8%B3%D9%84-%D9%82%D8%B6%D8%A7%D9%8A%D8%A7",
+    "requester": {
+      "name": "مروان ا.",
+      "profileUrl": "/user/marwan5131",
+      "avatar": "https://avatars.hsoubcdn.com/10d6c41a7331e00f2c378c7d650499fa?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ يومين و6 ساعات",
+        "timestamp": "26/03/2026 08:14:22 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ ساعة و39 دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.126Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784345,
+    "idString": "784345",
+    "postId": "forum_post-784345",
+    "index": 0,
+    "title": "‏مصمم شعارات محترف",
+    "postUrl": "/community/requests/784345-%D9%85%D8%B5%D9%85%D9%85-%D8%B4%D8%B9%D8%A7%D8%B1%D8%A7%D8%AA-%D9%85%D8%AD%D8%AA%D8%B1%D9%81",
+    "requester": {
+      "name": ".Omar A",
+      "profileUrl": "/user/3z.dosri",
+      "avatar": "https://avatars.hsoubcdn.com/a823bec1e35feb618e31ab4945ed83c2?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ يومين و11 ساعة",
+        "timestamp": "26/03/2026 03:29:43 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 54 دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.124Z",
+    "discoveredVia": "ajax"
+  },
+  {
+    "id": 784318,
+    "idString": "784318",
+    "postId": "forum_post-784318",
+    "index": 0,
+    "title": "احتاج مصمم جرافيك",
+    "postUrl": "/community/requests/784318-%D8%A7%D8%AD%D8%AA%D8%A7%D8%AC-%D9%85%D8%B5%D9%85%D9%85-%D8%AC%D8%B1%D8%A7%D9%81%D9%8A%D9%83",
+    "requester": {
+      "name": "محمد ص.",
+      "profileUrl": "/user/mmm5123",
+      "avatar": "https://avatars.hsoubcdn.com/29f416ba8bf6af9c52bf20268bac1014?s=128"
+    },
+    "timing": {
+      "posted": {
+        "text": "منذ يومين و19 ساعة",
+        "timestamp": "25/03/2026 19:14:12 GMT"
+      },
+      "lastReplyMobile": "آخر تفاعل منذ 51 دقيقة"
+    },
+    "lastReplier": null,
+    "detectedAt": "2026-03-28T14:48:05.123Z",
+    "discoveredVia": "ajax"
+  },
+  {
     "id": 784050,
     "idString": "784050",
     "postId": "forum_post-784050",
