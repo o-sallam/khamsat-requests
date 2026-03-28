@@ -38,6 +38,20 @@
                     <i class="fa-solid fa-clock"></i>
                     <span id="stat-last-poll" dir="ltr">--</span>
                 </div>
+                <div class="divider-subtle"></div>
+                <div class="pagination-controls">
+                    <button id="prev-page" class="page-btn" title="الصفحة السابقة">
+                        <i class="fa-solid fa-chevron-up"></i>
+                    </button>
+                    <div class="page-info">
+                        <span id="current-page">1</span>
+                        <span class="page-separator">/</span>
+                        <span id="total-pages">1</span>
+                    </div>
+                    <button id="next-page" class="page-btn" title="الصفحة التالية">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                </div>
             </div>
 
             <div class="header-right">
@@ -45,21 +59,89 @@
                     <span class="pulsing-dot"></span>
                     <span id="status-text">Connected</span>
                 </div>
+                <!-- Khamsat Token Setting -->
+                <div class="token-setting glass-effect">
+                    <div class="token-header">
+                        <i class="fa-solid fa-key"></i> Khamsat Token
+                    </div>
+                    <input type="password" id="khamsat-token" placeholder="أدخل التوكين هنا..." value="">
+                    <p class="token-note">التوكين يحفظ محلياً فقط. ابحث عن <code style="color: var(--accent);">name="token"</code> في Elements tab بموقع خمسات.</p>
+                </div>
             </div>
         </header>
 
         <main>
             <!-- RECENT HISTORY (Full Width) -->
-            <section>
-                <div id="recent-feed" class="scroll-area fancy-scrollbar">
+            <section class="scroll-area fancy-scrollbar">
+                <div id="recent-feed">
                     <div class="placeholder-msg">جاري تحميل الطلبات...</div>
                 </div>
             </section>
         </main>
     </div>
 
+    <!-- Post Details Modal -->
+    <div id="post-modal" class="modal-overlay">
+        <div class="modal-container glass-effect">
+            <div class="modal-header">
+                <h3 id="modal-title" class="modal-title"></h3>
+                <button id="modal-close" class="modal-close-btn">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-meta">
+                <span id="modal-buyer" class="buyer-name-tag"><i class="fa-solid fa-user"></i></span>
+                <span id="modal-time" class="time-ago tag-subtle"><i class="fa-solid fa-clock"></i></span>
+                <span id="modal-id" class="id-tag"></span>
+                <a id="modal-link" href="#" target="_blank" class="external-link-btn" title="فتح في خمسات">
+                    <i class="fa-solid fa-external-link-alt"></i>
+                </a>
+            </div>
+            <div class="modal-body">
+                <p id="modal-content" class="modal-content"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comment Modal -->
+    <div id="comment-modal" class="modal-overlay">
+        <div class="modal-container glass-effect comment-modal-container">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-comment-dots"></i> إضافة تعليق</h3>
+                <button id="comment-close" class="modal-close-btn">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="comment-post-info">
+                <h4 id="comment-post-title"></h4>
+                <div id="comment-author-info"></div>
+            </div>
+            <div class="modal-body">
+                <div class="comment-modal-content">
+                    <div class="comment-list-section">
+                        <div class="comment-list-header">التعليقات</div>
+                        <div id="comment-list" class="comment-list"></div>
+                    </div>
+                    <div class="comment-form-section">
+                        <textarea id="comment-text" class="comment-textarea" placeholder="اكتب تعليقك هنا..." rows="5"></textarea>
+                        <div id="comment-status-msg" class="status-msg"></div>
+                        <div class="modal-actions">
+                            <button id="submit-btn" class="submit-btn">
+                                <i class="fa-solid fa-paper-plane"></i> إرسال التعليق
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const API_BASE = ''; // Same host
+        const PAGE_LIMIT = 7;
+        let currentPage = 1;
+        let totalPages = 1;
+        
         const elements = {
             statusBadge: document.getElementById('connection-status'),
             statusText: document.getElementById('status-text'),
@@ -68,7 +150,22 @@
             statPollCount: document.getElementById('stat-poll-count'),
             statLastPoll: document.getElementById('stat-last-poll'),
             recentFeed: document.getElementById('recent-feed'),
+            currentPageEl: document.getElementById('current-page'),
+            totalPagesEl: document.getElementById('total-pages'),
+            prevPageBtn: document.getElementById('prev-page'),
+            nextPageBtn: document.getElementById('next-page'),
+            khamsatToken: document.getElementById('khamsat-token'),
         };
+
+        // Load token from localStorage
+        const savedToken = localStorage.getItem('khamsat_token');
+        if (savedToken) {
+            elements.khamsatToken.value = savedToken;
+        }
+
+        elements.khamsatToken.addEventListener('change', (e) => {
+            localStorage.setItem('khamsat_token', e.target.value);
+        });
 
         // --- Time Parsing & Formatting ---
         function getRealPostTime(post) {
@@ -174,26 +271,12 @@
 
             const isoTime = (dateObj instanceof Date && !isNaN(dateObj)) ? dateObj.toISOString() : new Date().toISOString();
 
-            let previewHtml = '';
-            let detailsHtml = '';
-
             if (post.postDetails) {
-                const truncated = post.postDetails.length > 150
-                    ? post.postDetails.substring(0, 150) + '...'
-                    : post.postDetails;
-
-                previewHtml = `<p class="post-preview-text text-dim">${truncated}</p>`;
-                detailsHtml = `
-                    <div class="post-details-drawer">
-                        <div class="divider-subtle"></div>
-                        <p class="post-full-text">${post.postDetails}</p>
-                    </div>`;
-
                 div.classList.add('has-details');
                 div.onclick = (e) => {
-                    // Don't expand if user click on the external link icon
+                    // Don't open modal if user clicks the external link icon
                     if (e.target.closest('.external-link-btn')) return;
-                    div.classList.toggle('expanded');
+                    openModal(post, title, buyerName, timeAgoText, postUrl, isoTime);
                 };
             }
 
@@ -204,24 +287,29 @@
                         <div class="post-title-row">
                             <span class="post-title">${title}</span>
                         </div>
-                        ${previewHtml}
                         <div class="post-meta-details">
                             <span class="buyer-name-tag"><i class="fa-solid fa-user"></i> ${buyerName}</span>
+                            ${post.requester?.level ? `<span class="buyer-level-tag"><i class="fa-solid fa-shield-halved"></i> ${post.requester.level}</span>` : ''}
                             <span class="time-ago tag-subtle" data-timestamp="${isoTime}">
                                 <i class="fa-solid fa-clock"></i> ${timeAgoText}
                             </span>
                             <span class="absolute-time text-dim">(${absoluteTime})</span>
                         </div>
-                        ${detailsHtml}
                     </div>
                     <div class="post-action">
                         <div class="action-top">
                             <span class="id-tag">#${post.id || post.postId.replace('forum_post-', '')}</span>
-                            <a href="${postUrl}" target="_blank" class="external-link-btn" title="فتح في خمسات">
-                                <i class="fa-solid fa-external-link-alt"></i>
-                            </a>
+                            <div class="post-icon-actions">
+                                <button class="comment-icon-btn" onclick="event.stopPropagation(); openCommentModal(${JSON.stringify(post).replace(/"/g, '&quot;')})" title="إضافة تعليق${post.commentsCount != null ? ` (${post.commentsCount} تعليق)` : ''}">
+                                    <i class="fa-solid fa-comment"></i>
+                                    ${post.commentsCount != null ? `<span class="comment-count">${post.commentsCount}</span>` : ''}
+                                </button>
+                                <a href="${postUrl}" target="_blank" class="external-link-btn" title="فتح في خمسات">
+                                    <i class="fa-solid fa-external-link-alt"></i>
+                                </a>
+                            </div>
                         </div>
-                        ${post.postDetails ? '<i class="fa-solid fa-chevron-down expand-icon"></i>' : ''}
+                        ${post.postDetails ? '<i class="fa-solid fa-expand expand-icon"></i>' : ''}
                     </div>
                 </div>
             `;
@@ -267,43 +355,250 @@
             }
         }
 
-        // Since we dropped the live feed block, we can just continuously refresh the recent feed smoothly.
-        // Or optimally, fetch `/posts/new` and prepend them to recent feed to avoid full re-renders.
-        async function pollNew() {
+        async function fetchPage(page) {
             try {
-                const res = await fetch(`${API_BASE}/posts/new`);
+                const res = await fetch(`${API_BASE}/posts/all?page=${page}&limit=${PAGE_LIMIT}`);
                 const data = await res.json();
 
-                if (data.count > 0) {
-                    // Remove placeholder if present
-                    if (elements.recentFeed.querySelector('.placeholder-msg')) {
-                        elements.recentFeed.innerHTML = '';
-                    }
+                currentPage = data.page;
+                totalPages = data.totalPages;
 
-                    // Prepend new posts
-                    data.posts.forEach(post => {
-                        const item = createPostItem(post);
-                        elements.recentFeed.prepend(item);
-                    });
+                elements.currentPageEl.innerText = currentPage;
+                elements.totalPagesEl.innerText = totalPages;
 
-                    // Limit list size visually to prevent infinite DOM growth
-                    while (elements.recentFeed.children.length > 50) {
-                        elements.recentFeed.removeChild(elements.recentFeed.lastChild);
-                    }
+                // Update button states
+                elements.prevPageBtn.disabled = currentPage <= 1;
+                elements.nextPageBtn.disabled = currentPage >= totalPages;
+
+                elements.recentFeed.innerHTML = '';
+                if (data.posts.length === 0) {
+                    elements.recentFeed.innerHTML = '<div class="placeholder-msg">لا توجد طلبات بعد.</div>';
+                    return;
                 }
+
+                data.posts.forEach(post => {
+                    elements.recentFeed.appendChild(createPostItem(post));
+                });
+
                 updateStatus(true);
             } catch (err) {
-                updateStatus(false, 'Live Check Failed');
+                console.error('Failed to fetch page', err);
+                updateStatus(false, 'Fetch Failed');
             }
         }
 
+        // Pagination controls
+        elements.prevPageBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                fetchPage(currentPage - 1);
+            }
+        });
+
+        elements.nextPageBtn.addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                fetchPage(currentPage + 1);
+            }
+        });
+
+        // Scroll-based pagination
+        const scrollArea = document.querySelector('.scroll-area');
+        scrollArea.addEventListener('wheel', (e) => {
+            const atTop = scrollArea.scrollTop === 0;
+            const atBottom = scrollArea.scrollTop + scrollArea.clientHeight >= scrollArea.scrollHeight - 10;
+
+            if (e.deltaY < 0 && atTop && currentPage > 1) {
+                // Scrolling up at top - go to previous page
+                e.preventDefault();
+                fetchPage(currentPage - 1);
+                scrollArea.scrollTop = scrollArea.scrollHeight;
+            } else if (e.deltaY > 0 && atBottom && currentPage < totalPages) {
+                // Scrolling down at bottom - go to next page
+                e.preventDefault();
+                fetchPage(currentPage + 1);
+                scrollArea.scrollTop = 0;
+            }
+        }, { passive: false });
+
+        // --- Modal Functions ---
+        const modal = document.getElementById('post-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBuyer = document.getElementById('modal-buyer');
+        const modalTime = document.getElementById('modal-time');
+        const modalId = document.getElementById('modal-id');
+        const modalLink = document.getElementById('modal-link');
+        const modalContent = document.getElementById('modal-content');
+        const modalClose = document.getElementById('modal-close');
+
+        function openModal(post, title, buyerName, timeAgoText, postUrl, isoTime) {
+            modalTitle.innerText = title || 'طلب بدون عنوان';
+            modalBuyer.innerHTML = `<i class="fa-solid fa-user"></i> ${buyerName}`;
+            modalTime.innerHTML = `<i class="fa-solid fa-clock"></i> ${timeAgoText}`;
+            modalId.innerText = `#${post.id || post.postId.replace('forum_post-', '')}`;
+            modalLink.href = postUrl;
+            modalContent.innerText = post.postDetails || 'لا يوجد تفاصيل';
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // --- Comment Functions ---
+        const commentModal = document.getElementById('comment-modal');
+        const commentPostTitle = document.getElementById('comment-post-title');
+        const commentText = document.getElementById('comment-text');
+        const submitBtn = document.getElementById('submit-btn');
+        const commentStatusMsg = document.getElementById('comment-status-msg');
+        let currentPostId = null;
+        let currentPostUrl = null;
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function renderCommentList(comments) {
+            const listEl = document.getElementById('comment-list');
+            if (!Array.isArray(comments) || comments.length === 0) {
+                listEl.innerHTML = '<div class="comment-empty">لا توجد تعليقات بعد.</div>';
+                return;
+            }
+
+            listEl.innerHTML = comments.map((comment) => {
+                const name = escapeHtml(comment.user?.name || 'مستخدم');
+                const profile = comment.user?.profileUrl ? `https://khamsat.com${comment.user.profileUrl}` : '#';
+                const avatar = comment.user?.avatar || 'https://via.placeholder.com/32';
+                const timeText = escapeHtml(comment.timing?.text || '');
+                const content = comment.content || '';
+
+                return `
+                    <div class="comment-item">
+                        <img src="${avatar}" class="comment-avatar" alt="${name}" loading="lazy">
+                        <div class="comment-body">
+                            <div class="comment-meta">
+                                <a href="${profile}" target="_blank" class="comment-user">${name}</a>
+                                <span class="comment-time">${timeText}</span>
+                            </div>
+                            <div class="comment-text">${content}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function fetchLatestPostFromPage(postId) {
+            try {
+                const res = await fetch(`${API_BASE}/posts/all?page=${currentPage}&limit=${PAGE_LIMIT}`);
+                const data = await res.json();
+                return data.posts?.find(p => String(p.id) === String(postId)) || null;
+            } catch (err) {
+                return null;
+            }
+        }
+
+        async function openCommentModal(post) {
+            const latestPost = await fetchLatestPostFromPage(post.id);
+            const activePost = latestPost || post;
+
+            currentPostId = activePost.id;
+            currentPostUrl = activePost.postUrl;
+            commentPostTitle.innerText = activePost.title || 'بدون عنوان';
+            document.getElementById('comment-author-info').innerText = activePost.requester?.name || 'مشتري غير معروف';
+            commentText.value = '';
+            commentStatusMsg.innerText = '';
+            commentStatusMsg.className = 'status-msg';
+            renderCommentList(activePost.comments || []);
+            
+            commentModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            commentText.focus();
+        }
+
+        async function postComment() {
+            const content = commentText.value.trim();
+            const token = elements.khamsatToken.value.trim();
+
+            if (!content) {
+                showCommentStatus('يرجى كتابة تعليق.', 'error');
+                return;
+            }
+            if (!token) {
+                showCommentStatus('يرجى إضافة توكين خمسات في القائمة الجانبية.', 'error');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جار الإرسال...';
+            
+            try {
+                const res = await fetch(`${API_BASE}/comment`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: currentPostId,
+                        url: currentPostUrl,
+                        content: content,
+                        token: token
+                    })
+                });
+
+                const data = await res.json();
+                if (data.ok) {
+                    showCommentStatus('تم إرسال التعليق بنجاح!', 'success');
+                    setTimeout(closeCommentModal, 2000);
+                } else {
+                    showCommentStatus(`خطأ: ${data.error || 'فشل الإرسال'}`, 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> إرسال التعليق';
+                }
+            } catch (err) {
+                showCommentStatus(`خطأ في الاتصال بالسيرفر.`, 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> إرسال التعليق';
+            }
+        }
+
+        function showCommentStatus(msg, type) {
+            commentStatusMsg.innerText = msg;
+            commentStatusMsg.className = `status-msg ${type}`;
+        }
+
+        function closeCommentModal() {
+            commentModal.classList.remove('active');
+            document.body.style.overflow = '';
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> إرسال التعليق';
+        }
+
+        document.getElementById('comment-close').addEventListener('click', closeCommentModal);
+        submitBtn.addEventListener('click', postComment);
+
+        // Restore Modal Close Listeners
+        modalClose.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+                closeCommentModal();
+            }
+        });
+
         // Initialize
         fetchStatus();
-        fetchRecent();
+        fetchPage(1);
 
-        // Polling intervals
+        // Polling interval for status
         setInterval(fetchStatus, 5000);
-        setInterval(pollNew, 5000); // Check for new items faster so UI updates as soon as server finds them
+        setInterval(() => fetchPage(currentPage), 15000);
     </script>
 </body>
 

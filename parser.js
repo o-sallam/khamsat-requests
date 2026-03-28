@@ -79,6 +79,44 @@ function parsePostsHtml(html) {
 }
 
 /**
+ * Parses the individual post page HTML for comments.
+ * Returns an array of clean comment objects.
+ */
+function parseCommentsHtml(html) {
+  const root = parse(html);
+  const commentEls = root.querySelectorAll('.discussion-item.comment');
+  const comments = [];
+
+  for (const el of commentEls) {
+    try {
+      const id = el.getAttribute('data-id');
+      const userEl = el.querySelector('.meta--user a');
+      const dateEl = el.querySelector('.meta--date span');
+      const avatarEl = el.querySelector('.meta--avatar img');
+      const contentEl = el.querySelector('.discussion-message article.comment.reply_content');
+
+      comments.push({
+        id: id,
+        user: {
+          name: userEl ? userEl.text.replace(/\s+/g, ' ').trim() : null,
+          profileUrl: userEl ? userEl.getAttribute('href') : null,
+          avatar: avatarEl ? avatarEl.getAttribute('src') : null
+        },
+        timing: {
+          text: dateEl ? dateEl.text.replace(/\s+/g, ' ').trim() : '',
+          timestamp: dateEl ? dateEl.getAttribute('title') : ''
+        },
+        content: contentEl ? contentEl.innerHTML.replace(/\s+/g, ' ').trim() : ''
+      });
+    } catch (err) {
+      console.error(`[parser] Failed to parse comment: ${err.message}`);
+    }
+  }
+
+  return comments;
+}
+
+/**
  * Khamsat date format: "DD/MM/YYYY HH:MM:SS GMT"
  * Converts to ISO 8601 string.
  */
@@ -93,4 +131,4 @@ function parseKhamsatDate(raw) {
   }
 }
 
-module.exports = { parsePostsHtml };
+module.exports = { parsePostsHtml, parseCommentsHtml };

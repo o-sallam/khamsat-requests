@@ -1,4 +1,4 @@
-const { fetchLatestPosts, probeId } = require('./probe');
+const { fetchLatestPosts, probeId, quickProbe } = require('./probe');
 const store = require('./store');
 
 const POLL_INTERVAL_MS = parseInt(process.env.POLL_INTERVAL_MS) || 300000;
@@ -14,6 +14,7 @@ let lastPollAt = null;
 let lastPollStatus = 'never';
 let pollCount = 0;
 let pollTimer = null;
+let rescanTimer = null;
 
 function init() {
   knownIds = store.loadKnownIds();
@@ -23,12 +24,12 @@ function init() {
 
 /**
  * Get the highest numeric ID currently saved.
- */
+    */
 function getMaxId() {
   return allPosts.reduce((max, p) => {
     const n = p.id || Number(String(p.postId || '').replace('forum_post-', ''));
     return n > max ? n : max;
-  }, 0);
+  }, 0);  
 }
 
 /**
@@ -69,17 +70,33 @@ async function poll() {
       const isStub = !isNew && !allPosts[existingIdx].title;
 
       if (isNew || isStub) {
-        
+
         // --- ADDED GAP: don't slam the server ---
         await sleep(2000 + Math.random() * 2000);
 
         // Fetch article content immediately!
         try {
-          console.log(`[poller] Probing new post ID ${idStr} for full content...`);
-          const probeRes = await probeId(post.id);
-          if (probeRes.status === 'new' && probeRes.post?.postDetails) {
-            post.postDetails = probeRes.post.postDetails;
-            console.log(`[poller] ✅ Acquired details for ID ${idStr}`);
+          console.log(`[poller] Probing new post ID ${idStr} with custom URL...`);
+          // Pass the postUrl explicitly if coming from AJAX
+          const probeRes = await probeId(post.id, post.postUrl);
+          if (probeRes.status === 'new' && probeRes.post) {
+            if (probeRes.post.postDetails) {
+              post.postDetails = probeRes.post.postDetails;
+              console.log(`[poller] ✅ Acquired details for ID ${idStr}`);
+            }
+            if (probeRes.post.requester?.userType) {
+              post.requester.userType = probeRes.post.requester.userType;
+              post.requester.level = probeRes.post.requester.userType; // sync both
+              console.log(`[poller] ✅ Acquired user type for ${post.requester.name}: ${post.requester.userType}`);
+            }
+            if (probeRes.post.commentsCount != null) {
+              post.commentsCount = probeRes.post.commentsCount;
+              console.log(`[poller] ✅ Acquired comments count for ID ${idStr}: ${post.commentsCount}`);
+            }
+            if (probeRes.post.comments) {
+              post.comments = probeRes.post.comments;
+              console.log(`[poller] ✅ Acquired ${post.comments.length} comments for ID ${idStr}`);
+            }
           }
         } catch (e) {
           console.error(`[poller] ⚠️ Failed to probe ID ${idStr}:`, e.message);
@@ -93,39 +110,60 @@ async function poll() {
           allPosts[existingIdx] = post;
         }
         newPostsBuffer.push(post);
+
+        // --- ATOMIC SAVE ---
+        store.saveKnownIds(knownIds);
+        store.saveKnownPosts(allPosts);
       }
     }
 
-    // --- PREDICTIVE PROBING: Check next IDs (+1, +2, +3) ---
+    // --- GAP FILLING & PREDICTIVE PROBING ---
     const lastMaxId = getMaxId();
-    console.log(`[poller] Predictive probing starting from ID ${lastMaxId + 1}...`);
-    for (let nextId = lastMaxId + 1; nextId <= lastMaxId + 3; nextId++) {
-      const idStr = String(nextId);
-      if (knownIds.has(idStr)) continue;
+    // Look back up to 15 IDs to catch delayed approvals, and forward 5 IDs for new posts
+    const windowStart = Math.max(1, lastMaxId - 15);
+    const windowEnd = lastMaxId + 5;
+    
+    const candidatesToProbe = [];
+    for (let id = windowStart; id <= windowEnd; id++) {
+      if (!knownIds.has(String(id))) {
+        candidatesToProbe.push(id);
+      }
+    }
 
-      // --- ADDED GAP: don't slam the server ---
+    // Limit to probing 5 missing IDs per cycle to avoid blocking
+    const toProbe = candidatesToProbe.slice(0, 5);
+    
+    if (toProbe.length > 0) {
+      console.log(`[poller] Gap/Predictive probing ${toProbe.length} IDs: ${toProbe.join(', ')} (Max: ${lastMaxId})`);
+    }
+
+    for (const nextId of toProbe) {
+      const idStr = String(nextId);
+
       await sleep(2500 + Math.random() * 2500);
 
       try {
         const res = await probeId(nextId);
         if (res.status === 'new' && res.post) {
-          console.log(`[poller] 🎯 FOUND FUTURE POST ${nextId} via predictive probe!`);
-          
+          console.log(`[poller] 🎯 FOUND MISSING/FUTURE POST ${nextId} via probe!`);
+
           const post = res.post;
           freshPosts.push(post);
           knownIds.add(idStr);
           allPosts.push(post);
           newPostsBuffer.push(post);
+
+          // Save immediately
+          store.saveKnownIds(knownIds);
+          store.saveKnownPosts(allPosts);
         }
       } catch (e) {
-        console.error(`[poller] ⚠️ Predictive probe failed for ID ${nextId}:`, e.message);
+        console.error(`[poller] ⚠️ Gap/Predictive probe failed for ID ${nextId}:`, e.message);
       }
     }
 
     if (freshPosts.length > 0) {
-      store.saveKnownIds(knownIds);
-      store.saveKnownPosts(allPosts);
-      console.log(`[poller] Poll #${pollCount} — ✅ ${freshPosts.length} NEW post(s) saved. IDs: ${freshPosts.map(p => p.id).join(', ')}`);
+      console.log(`[poller] Poll #${pollCount} — finished cycle with ${freshPosts.length} new/updated entries.`);
     } else {
       console.log(`[poller] Poll #${pollCount} — no new posts.`);
     }
@@ -138,17 +176,41 @@ async function poll() {
 }
 
 /**
+ * Re-scan the most recent N posts to update comment counts and details.
+ */
+async function rescanRecentPosts(limit = 7) {
+  const recent = getAllPosts().slice(0, limit);
+  console.log(`[poller] Periodically re-scanning ${recent.length} recent posts...`);
+  await rescanPosts(recent);
+}
+
+/**
  * Start the polling loop.
  */
 function start() {
   init();
   poll(); // run immediately on start
   pollTimer = setInterval(poll, POLL_INTERVAL_MS);
+  scheduleRescanTopPosts();
   console.log(`[poller] Polling every ${POLL_INTERVAL_MS / 1000}s`);
 }
 
 function stop() {
   if (pollTimer) clearInterval(pollTimer);
+  if (rescanTimer) clearTimeout(rescanTimer);
+}
+
+function scheduleRescanTopPosts() {
+  const delayMs = 10000 + Math.floor(Math.random() * 40001);
+  rescanTimer = setTimeout(async () => {
+    try {
+      await rescanRecentPosts(7);
+    } catch (e) {
+      console.error(`[poller] ⚠️ Top posts rescan failed:`, e.message);
+    } finally {
+      scheduleRescanTopPosts();
+    }
+  }, delayMs);
 }
 
 /**
@@ -235,6 +297,7 @@ function normalizeScrapePost(raw, numId, strId) {
     postId: `forum_post-${strId}`,
     index: raw.index || 0,
     title: raw.title || null,
+    postDetails: raw.postDetails || null,
     postUrl: raw.postUrl
       ? (raw.postUrl.startsWith('http') ? raw.postUrl : `https://khamsat.com${raw.postUrl}`)
       : `https://khamsat.com/community/requests/${strId}`,
@@ -244,6 +307,8 @@ function normalizeScrapePost(raw, numId, strId) {
         ? (buyer.profileUrl.startsWith('http') ? buyer.profileUrl : `https://khamsat.com${buyer.profileUrl}`)
         : null,
       avatar: buyer.avatar || null,
+      userType: buyer.userType || buyer.level || null,
+      level: buyer.level || buyer.userType || null,
     },
     timing: {
       posted: {
@@ -253,9 +318,63 @@ function normalizeScrapePost(raw, numId, strId) {
       lastReplyMobile: lastActRelative || '',
     },
     lastReplier: raw.lastReplier || null,
+    commentsCount: raw.commentsCount || null,
+    comments: raw.comments || [],
     detectedAt: raw.detectedAt || new Date().toISOString(),
     seededFromScrape: true,
   };
+}
+
+/**
+ * Re-scan posts that are missing postDetails or buyer level.
+ * Fetches full page content for each post and updates the stored data.
+ */
+async function rescanPosts(posts) {
+  console.log(`[poller] Re-scanning ${posts.length} posts for missing details...`);
+
+  for (const post of posts) {
+    const idStr = String(post.id);
+    await sleep(3000 + Math.random() * 2000);
+
+    try {
+      console.log(`[poller] Re-scanning post ID ${idStr} from ${post.postUrl || idStr}...`);
+      let probeRes = await quickProbe(post.id, post.postUrl);
+
+      if (probeRes.status !== 'new' || !probeRes.post) {
+        console.log(`[poller] Quick probe failed for ID ${idStr}, falling back to browser probe...`);
+        probeRes = await probeId(post.id, post.postUrl);
+      }
+      
+      if (probeRes.status === 'new' && probeRes.post) {
+        const idx = allPosts.findIndex(p => String(p.id) === idStr);
+        if (idx !== -1) {
+          if (probeRes.post.postDetails) {
+            allPosts[idx].postDetails = probeRes.post.postDetails;
+            console.log(`[poller] ✅ Updated postDetails for ID ${idStr}`);
+          }
+          if (probeRes.post.requester?.userType) {
+            allPosts[idx].requester = allPosts[idx].requester || {};
+            allPosts[idx].requester.userType = probeRes.post.requester.userType;
+            allPosts[idx].requester.level = probeRes.post.requester.userType;
+            console.log(`[poller] ✅ Updated user type for ID ${idStr}: ${probeRes.post.requester.userType}`);
+          }
+          if (probeRes.post.commentsCount != null) {
+            allPosts[idx].commentsCount = probeRes.post.commentsCount;
+            console.log(`[poller] ✅ Updated comments count for ID ${idStr}: ${probeRes.post.commentsCount}`);
+          }
+          if (probeRes.post.comments) {
+            allPosts[idx].comments = probeRes.post.comments;
+            console.log(`[poller] ✅ Updated comments for ID ${idStr}: ${probeRes.post.comments.length} comments`);
+          }
+          store.saveKnownPosts(allPosts);
+        }
+      }
+    } catch (e) {
+      console.error(`[poller] ⚠️ Re-scan failed for ID ${idStr}:`, e.message);
+    }
+  }
+
+  console.log(`[poller] Re-scan complete.`);
 }
 
 module.exports = {
@@ -267,4 +386,5 @@ module.exports = {
   seedIds,
   seedFullPosts,
   poll,
+  rescanPosts,
 };

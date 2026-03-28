@@ -52,20 +52,23 @@ app.get('/posts/new', (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 // GET /posts/all
 // Returns every post we have ever seen (from disk + current session).
-// Supports optional ?limit=N&offset=M for pagination.
+// Supports pagination via ?page=N&limit=M (default limit=7)
 // ─────────────────────────────────────────────────────────────────────────────
 app.get('/posts/all', (req, res) => {
   const all = poller.getAllPosts();
-  const limit = parseInt(req.query.limit) || all.length;
-  const offset = parseInt(req.query.offset) || 0;
-  const page = all.slice(offset, offset + limit);
+  const limit = parseInt(req.query.limit) || 7;
+  const page = parseInt(req.query.page) || 1;
+  const totalPages = Math.ceil(all.length / limit);
+  const offset = (page - 1) * limit;
+  const posts = all.slice(offset, offset + limit);
 
   res.json({
     total: all.length,
-    offset,
+    page,
     limit,
-    count: page.length,
-    posts: page,
+    totalPages,
+    count: posts.length,
+    posts,
   });
 });
 
@@ -150,6 +153,52 @@ app.post('/poll/now', async (req, res) => {
   if (typeof poller.poll === 'function') {
     poller.poll().catch(console.error);
   }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /comment
+// Submit a reply to a post using a Khamsat token.
+// ─────────────────────────────────────────────────────────────────────────────
+const { submitComment } = require('./probe');
+app.post('/comment', async (req, res) => {
+  const { id, content, token, lastId, url } = req.body;
+  if (!id || !content || !token) {
+    return res.status(400).json({ ok: false, error: 'Missing required fields' });
+  }
+
+  try {
+    const response = await submitComment(id, content, token, lastId || 0, url);
+    res.json({ ok: true, data: response });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /rescan
+// Re-scan posts that are missing postDetails or buyer level.
+// Body: { "limit": 50 } (optional, defaults to 20)
+// ─────────────────────────────────────────────────────────────────────────────
+app.post('/rescan', async (req, res) => {
+  const limit = Math.min(parseInt(req.query.limit) || parseInt(req.body?.limit) || 20, 100);
+  
+  // Find posts missing details or commentsCount
+  const missingDetails = poller.getAllPosts()
+    .filter(p => !p.postDetails || (!p.requester?.level && !p.requester?.userType) || p.commentsCount == null)
+    .slice(0, limit);
+  
+  if (missingDetails.length === 0) {
+    return res.json({ ok: true, message: 'All posts have full details.', scanned: 0 });
+  }
+  
+  res.json({ 
+    ok: true, 
+    message: `Starting re-scan for ${missingDetails.length} posts...`,
+    posts: missingDetails.map(p => p.id)
+  });
+  
+  // Fire async
+  poller.rescanPosts(missingDetails).catch(console.error);
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
