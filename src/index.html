@@ -275,7 +275,7 @@
                 div.classList.add('has-details');
                 div.onclick = (e) => {
                     // Don't open modal if user clicks the external link icon
-                    if (e.target.closest('.external-link-btn')) return;
+                    if (e.target.closest('.external-link-btn') || e.target.closest('.comment-icon-btn')) return;
                     openModal(post, title, buyerName, timeAgoText, postUrl, isoTime);
                 };
             }
